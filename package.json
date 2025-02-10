@@ -1,0 +1,14 @@
+{
+    "name": "ernaehrungsplan-app",
+    "version": "1.0.0",
+    "description": "Intelligente Ernährungsplan-App mit Node.js",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "axios": "^1.4.0"
+    }
+  }
+  
