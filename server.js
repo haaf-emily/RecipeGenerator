@@ -43,10 +43,14 @@ app.get("/calculate_calories", async (req, res) => {
       },
     };
 
-    // Protokollieren der Anfrage-URL und der Parameter
-    //console.log("Sending request with options:", options);
-
-    // Anfrage an die API senden
+    
+    const response = await axios.request(options);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Fehler bei der API-Anfrage:", error);
+    res.status(500).json({ error: "Interner Serverfehler" });
+  }
+});
 
 app.get("/get_recipes", async (req, res) => {
   console.log("Endpunkt /get_recipes wurde aufgerufen."); // Debugging
