@@ -60,4 +60,5 @@ async function getFeelsLikeForLocation(location) {
 }
 
 // Example usage:
-getFeelsLikeForLocation("Heidelberg, South Africa");
+// getFeelsLikeForLocation(${city}, " ", ${country});
+getFeelsLikeForLocation("New York, US");
