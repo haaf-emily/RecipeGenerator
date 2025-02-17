@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 // Beispiel: Kalorienbedarf berechnen
-app.post("/calculate_calories", async (req, res) => {
+app.get("/calculate_calories", async (req, res) => {
   try {
     //const { age, weight, height, gender, activity_level } = req.body;
     const age = '25';
