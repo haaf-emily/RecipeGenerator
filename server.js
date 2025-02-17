@@ -38,7 +38,7 @@ app.get("/calculate_calories", async (req, res) => {
         equation: equation
       },
       headers: {
-        "X-RapidAPI-Key": process.env.RAPIDAPI_KEY, // API-Key aus .env Datei
+        "X-RapidAPI-Key": process.env.CALORIERAPIDAPI_KEY, // API-Key aus .env Datei
         "X-RapidAPI-Host": "health-calculator-api.p.rapidapi.com",
       },
     };
