@@ -1,32 +1,42 @@
 const express = require("express");
-const axios = require("axios");
+const axios = require("axios"); // oder fetch
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const PORT = 8000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Ernährungsplan-App läuft mit Node.js!");
+
 });
-
-// Beispiel: Kalorienbedarf berechnen
-app.post("/calculate_calories", async (req, res) => {
-  const { age, weight, height, gender, activity_level, goal, location } = req.body;
-
-  let baseCalories = 10 * weight + 6.25 * height - 5 * age;
-  baseCalories += gender === "male" ? 5 : -161;
-
-  // Wetterdaten abrufen (OpenWeather API)
+app.get("/get_recipes", async (req, res) => {
+  console.log("Endpunkt /get_recipes wurde aufgerufen."); // Debugging
   try {
-    const weatherResponse = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=DEIN_API_KEY`
-    );
-    const temperature = weatherResponse.data.main.temp - 273.15;
+    const options = {
+      method: "GET",
+      url: "https://gustar-io-deutsche-rezepte.p.rapidapi.com/search_api",
+      params: {
+        text: "Käse",
+        ingLimit:"0",
+      },
+      headers: {
+        "X-RapidAPI-Key": process.env.RAPIDAPI_KEY, // API-Key aus der .env Datei
+        "X-RapidAPI-Host": "gustar-io-deutsche-rezepte.p.rapidapi.com",
+      },
+    };
 
-    res.json({ daily_calories: baseCalories, temperature });
+    //console.log("Request-Options:", options);
+
+    // API-Anfrage senden
+    const response = await axios.request(options);
+    res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Fehler beim Abrufen der Wetterdaten" });
+    console.error("Fehler bei der API-Anfrage:", error);
+    res.status(500).json({ error: "Interner Serverfehler" });
   }
 });
 
