@@ -1,0 +1,10 @@
+GET /caloriecalculator.php HTTP/1.1
+X-Rapidapi-Key: 88b25c3252msh342092efeac5292p185efajsn5ad84b1b3cb2
+X-Rapidapi-Host: calorie-calculator.p.rapidapi.com
+
+###
+
+GET /caloriecalculator.php?age=18&height=1%2C80&weight=50 HTTP/1.1
+X-Rapidapi-Key: 88b25c3252msh342092efeac5292p185efajsn5ad84b1b3cb2
+X-Rapidapi-Host: calorie-calculator.p.rapidapi.com
+Host: calorie-calculator.p.rapidapi.com
