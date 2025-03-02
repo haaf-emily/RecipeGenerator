@@ -15,8 +15,6 @@ import Footer from './components/Footer.vue'
 /* Füge hier spezifische Stile für diese Komponente hinzu, falls nötig */
 </style>
 
-
-
 <!---------- Original Code ----------->
 <!-- <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
