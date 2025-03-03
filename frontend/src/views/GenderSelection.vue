@@ -1,25 +1,29 @@
 <template>
   <div
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+    class="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-10 gap-y-12"
   >
-    <h1 class="text-2xl font-bold mb-6">Wähle dein Geschlecht</h1>
-    <div class="flex space-x-4">
+    <h1 class="text-3xl font-bold mb-10">Wähle dein Geschlecht:</h1>
+    <div class="flex justify-center gap-x-10">
       <button
         @click="selectGender('male')"
-        class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+        class="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+        :class="{ 'bg-gray-300 dark:bg-gray-600': gender === 'male' }"
       >
-        Mann
+        <span class="material-symbols-outlined">male</span>
+        <span class="text-lg">Mann</span>
       </button>
       <button
         @click="selectGender('female')"
-        class="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-700"
+        class="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+        :class="{ 'bg-gray-300 dark:bg-gray-600': gender === 'female' }"
       >
-        Frau
+        <span class="material-symbols-outlined text-8xl">female</span>
+        <span class="text-lg">Frau</span>
       </button>
     </div>
     <button
       @click="nextStep"
-      class="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-700"
+      class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-700"
     >
       Next
     </button>
