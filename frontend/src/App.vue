@@ -1,10 +1,15 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center">
-    <router-view />
+  <div class="h-screen flex flex-col items-center justify-between">
+    <div class="flex-1 flex flex-col justify-center">
+      <router-view />
+    </div>
+    <Footer />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import Footer from './components/Footer.vue'
+</script>
 
 <!---------- Original Code ----------->
 <!-- <script setup lang="ts">
