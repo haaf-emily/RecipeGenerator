@@ -25,7 +25,7 @@
         @click="nextStep"
         class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
       >
-        Weiter
+        Rezepte anzeigen
       </button>
     </div>
   </div>
