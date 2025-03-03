@@ -2,7 +2,7 @@
   <div
     class="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-10 gap-y-12"
   >
-    <h1 class="text-3xl mb-10">Wähle dein Geschlecht:</h1>
+    <h1 class="text-3xl text-center mb-10">Wähle dein Geschlecht:</h1>
     <div class="flex justify-center gap-x-10">
       <button
         @click="selectGender('male')"

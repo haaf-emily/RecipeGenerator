@@ -2,7 +2,7 @@
   <div
     class="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-10 gap-y-12"
   >
-    <h1 class="text-3xl gap-y-10">Geben Sie Ihre Details ein:</h1>
+    <h1 class="text-3xl text-center gap-y-10">Geben Sie Ihre Details ein:</h1>
     <div class="flex flex-col gap-y-10 w-full max-w-lg">
       <div>
         <label class="block text-lg font-semibold gap-y-2">Alter:</label>

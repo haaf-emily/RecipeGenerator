@@ -2,13 +2,14 @@
 @import 'tailwindcss';
 
 #app {
-  max-width: 1280px;
+  width: auto;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
 
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 2rem;
 }
 
