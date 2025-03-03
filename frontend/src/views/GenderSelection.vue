@@ -7,23 +7,23 @@
       <button
         @click="selectGender('male')"
         class="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-        :class="{ 'bg-gray-300 dark:bg-gray-600': gender === 'male' }"
+        :class="{ 'bg-gray-200 dark:bg-gray-600': gender === 'male' }"
       >
-        <span class="material-symbols-outlined">male</span>
+        <span class="material-symbols-outlined" style="font-size: 4rem">male</span>
         <span class="text-lg">Mann</span>
       </button>
       <button
         @click="selectGender('female')"
         class="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-        :class="{ 'bg-gray-300 dark:bg-gray-600': gender === 'female' }"
+        :class="{ 'bg-gray-200 dark:bg-gray-600': gender === 'female' }"
       >
-        <span class="material-symbols-outlined text-8xl">female</span>
+        <span class="material-symbols-outlined" style="font-size: 4rem">female</span>
         <span class="text-lg">Frau</span>
       </button>
     </div>
     <button
       @click="nextStep"
-      class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-700"
+      class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
     >
       Next
     </button>
@@ -38,7 +38,7 @@ const router = useRouter()
 const gender = ref(null)
 
 const selectGender = (selected) => {
-  gender.value = selected
+  gender.value = gender.value === selected ? null : selected
 }
 
 const nextStep = () => {
