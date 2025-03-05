@@ -3,12 +3,14 @@ import GenderSelection from '../views/GenderSelection.vue'
 import UserDetails from '../views/UserDetails.vue'
 import ActivityLevel from '../views/ActivityLevel.vue'
 import RecipeOverview from '../components/RecipeOverview.vue'
+import LocationSelection from '../views/LocationSelection.vue'
 
 const routes = [
   { path: '/', component: GenderSelection },
   { path: '/details', component: UserDetails },
   { path: '/activity', component: ActivityLevel },
   { path: '/recipes', component: RecipeOverview },
+  { path: '/location', component: LocationSelection },
 ]
 
 const router = createRouter({
