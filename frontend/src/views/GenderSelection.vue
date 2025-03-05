@@ -21,6 +21,7 @@
         <span class="text-lg">Frau</span>
       </button>
     </div>
+    <p v-if="errorMessage" class="text-red-500 text-center">{{ errorMessage }}</p>
     <button
       @click="nextStep"
       class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
@@ -35,6 +36,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const errorMessage = ref('')
+
 const gender = ref(null)
 
 const selectGender = (selected) => {
@@ -42,6 +45,12 @@ const selectGender = (selected) => {
 }
 
 const nextStep = () => {
+  if (!gender.value) {
+    errorMessage.value = 'Bitte wählen Sie eine Option aus'
+    return
+  }
+  errorMessage.value = ''
+
   if (gender.value) router.push('/details')
 }
 </script>
