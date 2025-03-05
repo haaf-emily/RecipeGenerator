@@ -7,17 +7,35 @@
       <div>
         <label class="block text-lg font-semibold gap-y-2">Alter:</label>
         <div class="text-2xl font-bold gap-y-2">{{ age }}</div>
-        <input type="range" v-model="age" min="10" max="100" class="w-full" />
+        <input
+          type="range"
+          v-model="age"
+          min="10"
+          max="100"
+          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+        />
       </div>
       <div>
         <label class="block text-lg font-semibold gap-y-2">Größe in cm:</label>
         <div class="text-2xl font-bold gap-y-2">{{ height }}</div>
-        <input type="range" v-model="height" min="100" max="250" class="w-full" />
+        <input
+          type="range"
+          v-model="height"
+          min="100"
+          max="250"
+          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+        />
       </div>
       <div>
         <label class="block text-lg font-semibold gap-y-2">Gewicht in kg:</label>
         <div class="text-2xl font-bold gap-y-2">{{ weight }}</div>
-        <input type="range" v-model="weight" min="30" max="200" class="w-full" />
+        <input
+          type="range"
+          v-model="weight"
+          min="30"
+          max="200"
+          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+        />
       </div>
     </div>
     <div class="flex justify-center gap-x-4 gap-y-12">
