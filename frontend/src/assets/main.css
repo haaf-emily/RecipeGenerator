@@ -33,3 +33,39 @@ a,
     place-items: center;
   }
 }
+
+/* General slider styling */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px; /* Slightly thicker for better visibility */
+  background: #3b82f6; /* Blue track */
+  border-radius: 5px;
+  outline: none;
+  position: relative;
+}
+
+/* Properly sized and centered thumb for WebKit (Chrome, Safari, Edge) */
+.slider::-webkit-slider-thumb,
+.slider::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  background: white;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+/* Adjust track for dark mode */
+.dark .slider {
+  background: #9ca3af;
+}
+
+.dark .slider::-webkit-slider-thumb,
+.dark .slider::-moz-range-thumb {
+  border-color: #9ca3af;
+}
