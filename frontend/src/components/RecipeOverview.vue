@@ -1,80 +1,82 @@
 <template>
-    <div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen p-6">
-      <!-- Header -->
-      <header class="text-center mb-6">
-        <h1 class="text-4xl font-bold mb-4">Titel</h1>
-      </header>
-  
-      <!-- Image and Info -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <img src="https://via.placeholder.com/600x400" alt="Rezept Bild" class="w-full h-auto rounded-lg shadow-md" />
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <p class="font-semibold">Schwierigkeit:</p>
-            <div class="flex items-center gap-1">
-              <span class="text-yellow-500">● ● ● ○ ○</span>
-            </div>
-          </div>
-          <div>
-            <p class="font-semibold">Zubereitungszeit:</p>
-            <p>20 min</p>
-          </div>
-          <div class="text-center">
-            <p>470 Kcal</p>
-            <p class="text-sm text-gray-600">Kalorien</p>
-          </div>
-          <div class="text-center">
-            <p>38g</p>
-            <p class="text-sm text-gray-600">Kohlenhydrate</p>
-          </div>
-          <div class="text-center">
-            <p>7,62g</p>
-            <p class="text-sm text-gray-600">Fett</p>
-          </div>
-          <div class="text-center">
-            <p>20,8g</p>
-            <p class="text-sm text-gray-600">Eiweiß</p>
-          </div>
-        </div>
+  <div class="min-h-screen bg-gray-100 px-4 md:px-8 lg:px-16 text-gray-900 font-sans">
+    <header class="bg-gray-800 text-white py-6 md:py-8 rounded-lg shadow-lg">
+      <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center">Rezept Titel</h1>
+    </header>
+
+    <img src="./path-to-your-image.jpg" alt="Rezept Bild" class="mt-6 md:mt-8 rounded-2xl shadow-xl mx-auto">
+
+    <div
+      class="bg-white p-6 md:p-8 mt-12 md:mt-16 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start">
+      <div class="mb-6 md:mb-0">
+        <p class="font-semibold text-gray-700">Schwierigkeitsgrad</p>
+        <p class="text-gray-600">Mittel</p>
+        <p class="font-semibold text-gray-700 mt-4">Zubereitungszeit</p>
+        <p class="text-gray-600">45 Minuten</p>
       </div>
-  
-      <!-- Tags -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <span class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 rounded-full">Tag</span>
-        <span class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 rounded-full">Tag</span>
-        <span class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-1 rounded-full">Tag</span>
+      <div class="border-l border-gray-300 h-24 mx-6 hidden md:block"></div>
+      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mt-6 md:mt-0">
+        <p><strong class="text-gray-500">kcal:</strong> <span class="text-gray-700">300 kcal</span></p>
+        <p><strong class="text-gray-500">Kohlenhydrate:</strong> <span class="text-gray-700">4g</span></p>
+        <p><strong class="text-gray-500">Fett:</strong> <span class="text-gray-700">Hauptgericht</span></p>
+        <p><strong class="text-gray-500">Eiweiß:</strong> <span class="text-gray-700">Italienisch</span></p>
       </div>
-  
-      <!-- Zutaten und Schritte -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Zutaten -->
-        <div>
-          <h2 class="text-2xl mb-4">Zutaten</h2>
-          <ul class="list-disc ml-6">
-            <li>Zutat 1</li>
-            <li>Zutat 2</li>
-            <li>Zutat 3</li>
-          </ul>
-        </div>
-  
-        <!-- Schritte -->
-        <div class="md:col-span-2">
-          <h2 class="text-2xl mb-4">Schritte</h2>
-          <ol class="list-decimal ml-6">
-            <li>Schritt 1</li>
-            <li>Schritt 2</li>
-            <li>Schritt 3</li>
-          </ol>
-        </div>
+
+
+    </div>
+
+    <div class="mt-8 md:mt-12 flex flex-wrap gap-2 md:gap-3 justify-center">
+      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#vegan</span>
+      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#glutenfrei</span>
+      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#gesund</span>
+    </div>
+
+    <div class="mt-8 md:mt-12 flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8">
+      <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg lg:w-1/2">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Zutaten</h2>
+        <ul class="list-disc list-inside space-y-2 md:space-y-3 text-gray-700">
+          <li>200g Nudeln</li>
+          <li>1 Dose Tomaten</li>
+          <li>1 Zwiebel</li>
+          <li>2 Knoblauchzehen</li>
+          <li>Salz und Pfeffer</li>
+        </ul>
+      </div>
+      <div class="lg:w-1/2">
+        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Zubereitung</h2>
+        <ol class="space-y-4 md:space-y-6 text-gray-700">
+          <li class="flex items-start">
+            <span
+              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">1</span>
+            Nudeln kochen.
+          </li>
+          <li class="flex items-start">
+            <span
+              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">2</span>
+            Zwiebeln und Knoblauch anbraten.
+          </li>
+          <li class="flex items-start">
+            <span
+              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">3</span>
+            Tomaten hinzufügen und köcheln lassen.
+          </li>
+          <li class="flex items-start">
+            <span
+              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">4</span>
+            Mit Salz und Pfeffer abschmecken.
+          </li>
+        </ol>
       </div>
     </div>
-  </template>
-  
-  <script lang="ts" setup>
-  // Keine speziellen Typen benötigt, einfacher Aufbau
-  </script>
-  
-  <style scoped>
-  /* Zusätzliche Styles falls nötig */
-  </style>
-  
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'ResponsiveRecipeComponent',
+}
+</script>
+
+<style>
+/* Add any custom styles here */
+</style>
