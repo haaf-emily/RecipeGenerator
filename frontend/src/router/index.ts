@@ -2,11 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import GenderSelection from '../views/GenderSelection.vue'
 import UserDetails from '../views/UserDetails.vue'
 import ActivityLevel from '../views/ActivityLevel.vue'
+import RecipeOverview from '../components/RecipeOverview.vue'
 
 const routes = [
   { path: '/', component: GenderSelection },
   { path: '/details', component: UserDetails },
   { path: '/activity', component: ActivityLevel },
+  { path: '/recipes', component: RecipeOverview },
 ]
 
 const router = createRouter({

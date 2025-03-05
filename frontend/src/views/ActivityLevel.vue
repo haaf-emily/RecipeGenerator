@@ -44,7 +44,5 @@ const selectActivity = (level) => {
 }
 
 const prevStep = () => router.push('/details')
-const nextStep = () => {
-  if (selectedActivity.value) router.push('/summary')
-}
+const nextStep = () => router.push('/recipes')
 </script>
