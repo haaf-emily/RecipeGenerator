@@ -14,6 +14,8 @@
         {{ level }}
       </button>
     </div>
+    <p v-if="errorMessage" class="text-red-500 text-center">{{ errorMessage }}</p>
+
     <div class="flex justify-center gap-x-4 gap-y-12">
       <button
         @click="prevStep"
@@ -25,7 +27,7 @@
         @click="nextStep"
         class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
       >
-        Rezepte anzeigen
+        Weiter
       </button>
     </div>
   </div>
@@ -36,7 +38,13 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const activityLevels = ['Niedrig', 'Mittel', 'Hoch', 'Sehr Hoch']
+const errorMessage = ref('')
+
+const activityLevels = ['Sesshaft', 'Leicht', 'Mäßig', 'Sehr', 'Extra']
+/* \"sedentary\", \"lightly_active\", \"moderately_active\", \"very_active\", or \"extra_active\"
+
+\„sesshaft\“, \„leicht_aktiv\“, \„mäßig_aktiv\“, \„sehr_aktiv\“, oder \„extra_aktiv\“.
+*/
 const selectedActivity = ref(null)
 
 const selectActivity = (level) => {
@@ -44,5 +52,13 @@ const selectActivity = (level) => {
 }
 
 const prevStep = () => router.push('/details')
-const nextStep = () => router.push('/recipes')
+const nextStep = () => {
+  if (!selectedActivity.value) {
+    errorMessage.value = 'Bitte wählen Sie eine Option aus'
+    return
+  }
+  errorMessage.value = ''
+
+  if (selectedActivity.value) router.push('/location')
+}
 </script>
