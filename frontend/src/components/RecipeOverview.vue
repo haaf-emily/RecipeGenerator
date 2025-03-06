@@ -1,40 +1,81 @@
 <template>
-  <div class="min-h-screen bg-gray-100 px-4 md:px-8 lg:px-16 text-gray-900 font-sans">
-    <header class="bg-gray-800 text-white py-6 md:py-8 rounded-lg shadow-lg">
-      <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-center">Rezept Titel</h1>
-    </header>
+  <div
+    class="min-h-screen bg-gradient-to-b from-white to-gray-100 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 text-gray-900 font-sans"
+  >
+    <div class="h-5"></div>
+    <div class="bg-[#4A5759] py-6 shadow-md mb-16 w-full">
+      <h1 class="text-4xl font-bold text-center text-white">Rezept Titel</h1>
+    </div>
+    <div class="h-5"></div>
 
-    <img src="./path-to-your-image.jpg" alt="Rezept Bild" class="mt-6 md:mt-8 rounded-2xl shadow-xl mx-auto">
-
-    <div
-      class="bg-white p-6 md:p-8 mt-12 md:mt-16 rounded-2xl shadow-lg flex flex-col md:flex-row justify-between items-start">
-      <div class="mb-6 md:mb-0">
-        <p class="font-semibold text-gray-700">Schwierigkeitsgrad</p>
-        <p class="text-gray-600">Mittel</p>
-        <p class="font-semibold text-gray-700 mt-4">Zubereitungszeit</p>
-        <p class="text-gray-600">45 Minuten</p>
-      </div>
-      <div class="border-l border-gray-300 h-24 mx-6 hidden md:block"></div>
-      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mt-6 md:mt-0">
-        <p><strong class="text-gray-500">kcal:</strong> <span class="text-gray-700">300 kcal</span></p>
-        <p><strong class="text-gray-500">Kohlenhydrate:</strong> <span class="text-gray-700">4g</span></p>
-        <p><strong class="text-gray-500">Fett:</strong> <span class="text-gray-700">Hauptgericht</span></p>
-        <p><strong class="text-gray-500">Eiweiß:</strong> <span class="text-gray-700">Italienisch</span></p>
-      </div>
-
-
+    <div class="flex justify-center items-center mt-12">
+      <img
+        src="./path-to-your-image.jpg"
+        alt="Rezept Bild"
+        class="rounded-lg shadow-md w-full h-auto object-cover"
+      />
     </div>
 
-    <div class="mt-8 md:mt-12 flex flex-wrap gap-2 md:gap-3 justify-center">
-      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#vegan</span>
-      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#glutenfrei</span>
-      <span class="bg-gray-200 text-gray-800 px-3 md:px-4 py-1 md:py-2 rounded-full font-medium">#gesund</span>
+    <div class="h-5"></div>
+    <!-- Info-Sektion-->
+    <div class="bg-white p-8 rounded-xl shadow-md md:p-12 max-w-5xl mx-auto mt-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="flex flex-col items-center md:items-start">
+            <p class="text-[#E89BA7] font-bold mb-2 text-lg">{{ rating }}</p>
+            <div class="w-36 h-4 bg-gray-200 rounded-full relative overflow-hidden">
+              <div
+                class="h-4 bg-gradient-to-r from-[#D4D0C4] to-[#AEC2AF] rounded-full transition-all duration-500"
+                :style="{ width: (rating / 5) * 100 + '%' }"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden md:block w-px bg-gray-300 h-24"></div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-center">
+          <div class="flex flex-col items-center p-4">
+            <p class="text-[#E89BA7] font-bold text-xl mb-1">470</p>
+            <p class="text-[#4A5759] text-sm">kcal</p>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <p class="text-[#E89BA7] font-bold text-xl mb-1">8</p>
+            <p class="text-[#4A5759] text-sm">Portionen</p>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <p class="text-[#E89BA7] font-bold text-xl mb-1">256</p>
+            <p class="text-[#4A5759] text-sm">kcal</p>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <p class="text-[#E89BA7] font-bold text-xl mb-1">524</p>
+            <p class="text-[#4A5759] text-sm">Bewertungen</p>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="mt-8 md:mt-12 flex flex-col lg:flex-row space-y-6 lg:space-y-0 lg:space-x-8">
-      <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg lg:w-1/2">
-        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Zutaten</h2>
-        <ul class="list-disc list-inside space-y-2 md:space-y-3 text-gray-700">
+    <!-- Tags -->
+    <div class="h-10"></div>
+    <div class="flex gap-6 justify-center mt-12 text-xs">
+      <span class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF]"
+        >#vegan</span
+      >
+      <span class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF]"
+        >#glutenfrei</span
+      >
+      <span class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF]"
+        >#gesund</span
+      >
+    </div>
+    <div class="h-10"></div>
+
+    <!-- Zutaten -->
+    <div class="mt-16 flex flex-col md:flex-row gap-16">
+      <!-- Zutaten Block -->
+      <div class="bg-white p-8 rounded-xl shadow-md w-full md:w-1/2">
+        <h2 class="text-2xl font-bold text-[#E89BA7] mb-6">Zutaten</h2>
+        <ul class="list-disc pl-6 text-[#4A5759] space-y-2">
           <li>200g Nudeln</li>
           <li>1 Dose Tomaten</li>
           <li>1 Zwiebel</li>
@@ -42,32 +83,28 @@
           <li>Salz und Pfeffer</li>
         </ul>
       </div>
-      <div class="lg:w-1/2">
-        <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Zubereitung</h2>
-        <ol class="space-y-4 md:space-y-6 text-gray-700">
-          <li class="flex items-start">
-            <span
-              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">1</span>
-            Nudeln kochen.
-          </li>
-          <li class="flex items-start">
-            <span
-              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">2</span>
-            Zwiebeln und Knoblauch anbraten.
-          </li>
-          <li class="flex items-start">
-            <span
-              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">3</span>
-            Tomaten hinzufügen und köcheln lassen.
-          </li>
-          <li class="flex items-start">
-            <span
-              class="bg-gray-800 text-white rounded-full w-8 md:w-10 h-8 md:h-10 flex items-center justify-center mr-3 md:mr-4 font-bold">4</span>
-            Mit Salz und Pfeffer abschmecken.
-          </li>
-        </ol>
+      <!-- Zubereitung Block -->
+      <div class="p-8 w-full md:w-1/2">
+        <h2 class="text-2xl font-bold text-[#E89BA7] mb-6">Zubereitung</h2>
+        <p class="text-[#4A5759]">
+          Bist du neugierig geworden und hast Lust, etwas Neues auszuprobieren? Klicke jetzt auf den
+          Button, um das vollständige Rezept zu entdecken und Schritt für Schritt dein ganz
+          persönliches Lieblingsgericht zu zaubern. Mit frischen Zutaten und einer einfachen
+          Zubereitung wird dieses Rezept sicher zu einem kulinarischen Highlight in deiner Küche!
+        </p>
+        <div class="h-3"></div>
+        <!-- Angepasster Button für das Rezept-Design -->
+        <div class="flex justify-center mt-8">
+          <a
+            href="#"
+            class="bg-[#D4D0C4] text-[#4A5759] font-semibold text-lg py-3 px-8 rounded-full shadow-sm hover:bg-[#4A5759] hover:text-[#D4D0C4] transition duration-300 transform hover:scale-105"
+          >
+            Weg zur Zubereitung
+          </a>
+        </div>
       </div>
     </div>
+    <div class="h-6"></div>
   </div>
 </template>
 
