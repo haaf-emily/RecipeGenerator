@@ -39,15 +39,6 @@
           </li>
         </ul>
       </div>
-      <div>
-        <label class="block text-lg font-semibold mb-2">Land:</label>
-        <input
-          type="text"
-          v-model="country"
-          class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Land eingeben..."
-        />
-      </div>
     </div>
 
     <div class="flex justify-center gap-x-4 mt-12">
@@ -99,11 +90,38 @@ const getLocation = () => {
 
 const fetchCities = async () => {
   if (city.value.length > 2) {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${city.value}&addressdetails=1&limit=5`,
-    )
-    const data = await response.json()
-    suggestedCities.value = data.map((item) => item.display_name)
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${city.value}&addressdetails=1&limit=5&class=place&type=city,town,village,hamlet`,
+      )
+      const data = await response.json()
+
+      console.log('API Response:', data) // Log the API response
+
+      // List of terms to exclude (to remove squares, roads, etc.)
+      const excludeKeywords = ['square', 'road', 'highway', 'station', 'airport', 'park', 'plaza']
+
+      suggestedCities.value = data
+        .map((item) => {
+          const name =
+            item.address.city || item.address.town || item.address.village || item.address.hamlet
+          return name ? `${name}, ${item.address.country}` : null
+        })
+        .filter(
+          (item, index, self) =>
+            item !== null && // Remove null results
+            self.indexOf(item) === index && // Remove duplicates
+            !excludeKeywords.some(
+              (
+                word, // Remove unwanted locations
+              ) => item.toLowerCase().includes(word),
+            ),
+        )
+
+      console.log('Filtered Suggestions:', suggestedCities.value) // Log filtered results
+    } catch (error) {
+      console.error('Error fetching city suggestions:', error)
+    }
   } else {
     suggestedCities.value = []
   }
