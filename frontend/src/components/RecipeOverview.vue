@@ -70,6 +70,7 @@
         </div>
       </div>
     </div>
+    <div class="h-6"></div>
   </div>
 </template>
 
