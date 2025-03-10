@@ -6,6 +6,9 @@ require("dotenv").config();
 const app = express();
 const PORT = 8000;
 
+const { swaggerUi, swaggerSpec } = require("./swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(express.json());
 app.use(cors());
 
@@ -94,6 +97,85 @@ async function selectThreeMeals(calories, temperature) {
   return { breakfast, lunch, dinner, totalCalories };
 }
 
+  /**
+ * @swagger
+ * /get_meal_plan:
+ *   get:
+ *     summary: Gibt einen personalisierten Ernährungsplan zurück.
+ *     parameters:
+ *       - in: query
+ *         name: age
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Alter des Nutzers in Jahren.
+ *       - in: query
+ *         name: weight
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Gewicht des Nutzers in Kilogramm.
+ *       - in: query
+ *         name: height
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Körpergröße des Nutzers in cm.
+ *       - in: query
+ *         name: gender
+ *         schema:
+ *           type: string
+ *           enum: [male, female]
+ *         required: true
+ *         description: Geschlecht des Nutzers.
+ *       - in: query
+ *         name: activity_level
+ *         schema:
+ *           type: string
+ *           enum: [sedentary, lightly_active, moderately_active, very_active, extra_active]
+ *         required: true
+ *         description: Aktivitätslevel des Nutzers.
+ *       - in: query
+ *         name: goal
+ *         schema:
+ *           type: string
+ *           enum: [weight_loss, maintenance, weight_gain]
+ *         required: true
+ *         description: Ernährungsziel.
+ *       - in: query
+ *         name: location
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Standort des Nutzers (z. B. "Berlin, Germany").
+ *     responses:
+ *       200:
+ *         description: Erfolgreiche Antwort mit Mahlzeiten.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 kalorienbedarf:
+ *                   type: number
+ *                 gefühlteTemperatur:
+ *                   type: number
+ *                 mahlzeiten:
+ *                   type: object
+ *                   properties:
+ *                     frühstück:
+ *                       type: string
+ *                     mittagessen:
+ *                       type: string
+ *                     abendessen:
+ *                       type: string
+ *                 gesamtKalorien:
+ *                   type: number
+ *       400:
+ *         description: Fehlende Parameter.
+ *       500:
+ *         description: Interner Serverfehler.
+ */
 app.get("/get_meal_plan", async (req, res) => {
   try {
     const { age, weight, height, gender, activity_level, goal, location } = req.query;
