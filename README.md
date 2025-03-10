@@ -15,4 +15,4 @@ http://localhost:8000/get_meal_plan?age=25&weight=70&height=175&gender=male&acti
 
 OpenAPI:
 npm install swagger-jsdoc swagger-ui-express
-http://localhost:8000/api-docs
+Server: http://localhost:8000/api-docs
