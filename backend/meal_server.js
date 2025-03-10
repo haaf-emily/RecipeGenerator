@@ -254,7 +254,7 @@ async function selectThreeMeals(calories, temperature) {
   return { breakfast, lunch, dinner, totalCalories };
 }
 
-  /**
+/**
  * @swagger
  * /get_meal_plan:
  *   get:
@@ -334,122 +334,123 @@ async function selectThreeMeals(calories, temperature) {
  *         description: Interner Serverfehler.
  */
 app.get("/get_meal_plan", async (req, res) => {
-// Store user data when received
-app.post("/api/user-data", async (req, res) => {
-  try {
-    // Validate incoming data
-    const { validated, errors, isValid } = validateUserData(req.body);
+  // Store user data when received
+  app.post("/api/user-data", async (req, res) => {
+    try {
+      // Validate incoming data
+      const { validated, errors, isValid } = validateUserData(req.body);
 
-    if (!isValid) {
-      return res.status(400).json({
-        error: "Invalid data provided",
-        details: errors,
+      if (!isValid) {
+        return res.status(400).json({
+          error: "Invalid data provided",
+          details: errors,
+        });
+      }
+
+      // Update user data with validated values
+      userData = { ...userData, ...validated };
+      console.log("Updated user data:", userData);
+
+      res.json({
+        message: "Data received and validated successfully",
+        receivedData: validated,
       });
+    } catch (error) {
+      console.error("Error processing request:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
+  });
 
-    // Update user data with validated values
-    userData = { ...userData, ...validated };
-    console.log("Updated user data:", userData);
+  // Get stored user data for frontend persistence
+  app.get("/api/user-data", (req, res) => {
+    res.json(userData);
+  });
 
-    res.json({
-      message: "Data received and validated successfully",
-      receivedData: validated,
-    });
-  } catch (error) {
-    console.error("Error processing request:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+  // Generate meal plan using stored user data
+  app.get("/get_meal_plan", async (req, res) => {
+    try {
+      const { age, weight, height, gender, activity_level, goal, location } =
+        userData;
 
-// Get stored user data for frontend persistence
-app.get("/api/user-data", (req, res) => {
-  res.json(userData);
-});
+      // Validate required fields are present
+      if (
+        !age ||
+        !weight ||
+        !height ||
+        !gender ||
+        !activity_level ||
+        !goal ||
+        !location
+      ) {
+        return res.status(400).json({
+          error: "Missing required parameters",
+          required: [
+            "age",
+            "weight",
+            "height",
+            "gender",
+            "activity_level",
+            "goal",
+            "location",
+          ],
+        });
+      }
 
-// Generate meal plan using stored user data
-app.get("/get_meal_plan", async (req, res) => {
-  try {
-    const { age, weight, height, gender, activity_level, goal, location } =
-      userData;
+      const calories = await calculateCalories(
+        age,
+        weight,
+        height,
+        gender,
+        activity_level,
+        goal
+      );
 
-    // Validate required fields are present
-    if (
-      !age ||
-      !weight ||
-      !height ||
-      !gender ||
-      !activity_level ||
-      !goal ||
-      !location
-    ) {
-      return res.status(400).json({
-        error: "Missing required parameters",
-        required: [
-          "age",
-          "weight",
-          "height",
-          "gender",
-          "activity_level",
-          "goal",
-          "location",
-        ],
+      if (!calories) {
+        return res.status(500).json({ error: "Error calculating calories" });
+      }
+
+      const coordinates = await getCoordinates(location);
+      if (!coordinates) {
+        return res.status(500).json({ error: "Error with geocoding" });
+      }
+
+      const feelsLikeTemp = await getFeelsLikeTemperature(
+        coordinates.latitude,
+        coordinates.longitude
+      );
+
+      if (feelsLikeTemp === null) {
+        return res.status(500).json({ error: "Error fetching temperature" });
+      }
+
+      const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
+
+      if (mealPlan.error) {
+        return res.status(500).json({ error: mealPlan.error });
+      }
+
+      res.json({
+        calorieRequirement: calories,
+        feelsLikeTemperature: feelsLikeTemp,
+        meals: {
+          breakfast: mealPlan.breakfast,
+          lunch: mealPlan.lunch,
+          dinner: mealPlan.dinner,
+        },
+        totalCalories: mealPlan.totalCalories,
       });
+    } catch (error) {
+      console.error("Error fetching meal plan:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
+  });
 
-    const calories = await calculateCalories(
-      age,
-      weight,
-      height,
-      gender,
-      activity_level,
-      goal
-    );
+  // Health check endpoint
+  app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
 
-    if (!calories) {
-      return res.status(500).json({ error: "Error calculating calories" });
-    }
-
-    const coordinates = await getCoordinates(location);
-    if (!coordinates) {
-      return res.status(500).json({ error: "Error with geocoding" });
-    }
-
-    const feelsLikeTemp = await getFeelsLikeTemperature(
-      coordinates.latitude,
-      coordinates.longitude
-    );
-
-    if (feelsLikeTemp === null) {
-      return res.status(500).json({ error: "Error fetching temperature" });
-    }
-
-    const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
-
-    if (mealPlan.error) {
-      return res.status(500).json({ error: mealPlan.error });
-    }
-
-    res.json({
-      calorieRequirement: calories,
-      feelsLikeTemperature: feelsLikeTemp,
-      meals: {
-        breakfast: mealPlan.breakfast,
-        lunch: mealPlan.lunch,
-        dinner: mealPlan.dinner,
-      },
-      totalCalories: mealPlan.totalCalories,
-    });
-  } catch (error) {
-    console.error("Error fetching meal plan:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });
