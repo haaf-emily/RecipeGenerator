@@ -6,12 +6,12 @@
     <div class="flex flex-col gap-y-6 w-1/2 max-w-lg">
       <button
         v-for="level in activityLevels"
-        :key="level"
-        @click="selectActivity(level)"
+        :key="level.value"
+        @click="selectActivity(level.value)"
         class="p-4 border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
-        :class="{ 'bg-gray-200 dark:bg-gray-600': selectedActivity === level }"
+        :class="{ 'bg-gray-200 dark:bg-gray-600': selectedActivity === level.value }"
       >
-        {{ level }}
+        {{ level.label }}
       </button>
     </div>
     <p v-if="errorMessage" class="text-red-500 text-center">{{ errorMessage }}</p>
@@ -26,39 +26,63 @@
       <button
         @click="nextStep"
         class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+        :disabled="isLoading"
       >
-        Weiter
+        <span v-if="isLoading">Lädt...</span>
+        <span v-else>Weiter</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserDataStore } from '../stores/UserDataStore'
 
 const router = useRouter()
 const errorMessage = ref('')
+const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = useUserDataStore()
 
-const activityLevels = ['Sesshaft', 'Leicht', 'Mäßig', 'Sehr', 'Extra']
-/* \"sedentary\", \"lightly_active\", \"moderately_active\", \"very_active\", or \"extra_active\"
+// Map the German labels to the expected API values
+const activityLevels = [
+  { label: 'Sesshaft', value: 'sedentary' },
+  { label: 'Leicht', value: 'lightly_active' },
+  { label: 'Mäßig', value: 'moderately_active' },
+  { label: 'Sehr', value: 'very_active' },
+  { label: 'Extra', value: 'extra_active' },
+]
 
-\„sesshaft\“, \„leicht_aktiv\“, \„mäßig_aktiv\“, \„sehr_aktiv\“, oder \„extra_aktiv\“.
-*/
-const selectedActivity = ref(null)
+const selectedActivity = ref(userData.activity_level)
+
+// Load data on component mount
+onMounted(async () => {
+  await loadFromBackend()
+  selectedActivity.value = userData.activity_level
+})
 
 const selectActivity = (level) => {
   selectedActivity.value = selectedActivity.value === level ? null : level
+  updateUserData('activity_level', selectedActivity.value)
 }
 
+// Go back to the previous step
 const prevStep = () => router.push('/details')
-const nextStep = () => {
+
+// Go to the next step and send data to backend
+const nextStep = async () => {
   if (!selectedActivity.value) {
     errorMessage.value = 'Bitte wählen Sie eine Option aus'
     return
   }
   errorMessage.value = ''
 
-  if (selectedActivity.value) router.push('/location')
+  try {
+    await saveToBackend() // Send activity level to backend before proceeding
+    router.push('/location')
+  } catch (error) {
+    console.error('Error sending activity level:', error)
+    alert('Es gab ein Problem beim Senden der Daten.')
+  }
 }
 </script>
