@@ -2,9 +2,10 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const NodeCache = require("node-cache");
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
+
+// Import swagger configuration from external file
+const { swaggerUi, swaggerSpec } = require("./swagger");
 
 const app = express();
 const PORT = 8000;
@@ -20,124 +21,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Define Swagger options
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Meal Planning API",
-      version: "1.0.0",
-      description:
-        "API for personalized meal planning based on user data and location",
-    },
-    servers: [
-      {
-        url: "http://localhost:8000",
-        description: "Development server",
-      },
-    ],
-    components: {
-      schemas: {
-        UserData: {
-          type: "object",
-          properties: {
-            gender: {
-              type: "string",
-              enum: ["male", "female"],
-              description: "User's gender",
-            },
-            age: {
-              type: "integer",
-              minimum: 1,
-              maximum: 120,
-              description: "User's age in years",
-            },
-            height: {
-              type: "number",
-              minimum: 100,
-              maximum: 250,
-              description: "User's height in centimeters",
-            },
-            weight: {
-              type: "number",
-              minimum: 30,
-              maximum: 300,
-              description: "User's weight in kilograms",
-            },
-            activity_level: {
-              type: "string",
-              enum: [
-                "sedentary",
-                "lightly_active",
-                "moderately_active",
-                "very_active",
-                "extra_active",
-              ],
-              description: "User's activity level",
-            },
-            goal: {
-              type: "string",
-              enum: ["lose", "maintain", "gain"],
-              default: "maintain",
-              description: "User's weight goal",
-            },
-            location: {
-              type: "string",
-              description: "User's location (city, country) - optional",
-            },
-          },
-        },
-        MealPlan: {
-          type: "object",
-          properties: {
-            calorieRequirement: {
-              type: "number",
-              description: "Daily calorie requirement based on user data",
-            },
-            goal: {
-              type: "string",
-              description: "Weight goal used for calculations",
-            },
-            feelsLikeTemperature: {
-              type: "number",
-              description:
-                "Current temperature at user location or default value",
-            },
-            locationUsed: {
-              type: "string",
-              description: "Location used or indication of default temperature",
-            },
-            meals: {
-              type: "object",
-              properties: {
-                breakfast: {
-                  type: "object",
-                  description: "Breakfast recipe details",
-                },
-                lunch: {
-                  type: "object",
-                  description: "Lunch recipe details",
-                },
-                dinner: {
-                  type: "object",
-                  description: "Dinner recipe details",
-                },
-              },
-            },
-            totalCalories: {
-              type: "number",
-              description: "Total calories in the meal plan",
-            },
-          },
-        },
-      },
-    },
-  },
-  apis: ["./meal_server.js"], // Path to the API docs
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Setup Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Environment variables and validation
 const {
@@ -460,8 +345,8 @@ async function selectThreeMeals(calories, temperature) {
  *   post:
  *     tags:
  *       - User Data Management
- *     summary: Store user data
- *     description: Store user profile data for meal planning
+ *     summary: Benutzerdaten speichern
+ *     description: Speichert Benutzerprofildaten für die Mahlzeitenplanung
  *     requestBody:
  *       required: true
  *       content:
@@ -470,7 +355,7 @@ async function selectThreeMeals(calories, temperature) {
  *             $ref: '#/components/schemas/UserData'
  *     responses:
  *       200:
- *         description: Data received successfully
+ *         description: Daten erfolgreich empfangen
  *         content:
  *           application/json:
  *             schema:
@@ -482,21 +367,9 @@ async function selectThreeMeals(calories, temperature) {
  *                 receivedData:
  *                   $ref: '#/components/schemas/UserData'
  *       400:
- *         description: Invalid data provided
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Invalid data provided
- *                 details:
- *                   type: object
- *                   example:
- *                     age: Invalid value for age
+ *         description: Ungültige Daten übermittelt
  *       500:
- *         description: Server error
+ *         description: Serverfehler
  */
 app.post("/api/user-data", async (req, res) => {
   try {
@@ -533,21 +406,13 @@ app.post("/api/user-data", async (req, res) => {
  *   post:
  *     tags:
  *       - System Management
- *     summary: Clear all caches
- *     description: Clear all cached data including coordinates, temperatures, calories, recipes, and user data
+ *     summary: Cache leeren
+ *     description: Löscht alle zwischengespeicherten Daten einschließlich Koordinaten, Temperaturen, Kalorien, Rezepte und Benutzerdaten
  *     responses:
  *       200:
- *         description: Cache cleared successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Cache cleared successfully
+ *         description: Cache erfolgreich geleert
  *       500:
- *         description: Failed to clear cache
+ *         description: Fehler beim Leeren des Caches
  */
 app.post("/api/clear-cache", async (req, res) => {
   try {
@@ -589,11 +454,11 @@ app.post("/api/clear-cache", async (req, res) => {
  *   get:
  *     tags:
  *       - User Data Management
- *     summary: Get user data
- *     description: Retrieve stored user profile data
+ *     summary: Benutzerdaten abrufen
+ *     description: Ruft gespeicherte Benutzerprofildaten ab
  *     responses:
  *       200:
- *         description: User data retrieved successfully
+ *         description: Benutzerdaten erfolgreich abgerufen
  *         content:
  *           application/json:
  *             schema:
@@ -605,43 +470,28 @@ app.get("/api/user-data", (req, res) => {
 
 /**
  * @swagger
- * /get-meal-plan:
+ * /get_meal_plan:
  *   get:
  *     tags:
  *       - Meal Planning
- *     summary: Generate meal plan
+ *     summary: Ernährungsplan generieren
  *     description: >
- *       Generate a personalized meal plan based on user data and location.
- *       The meal plan considers the user's calorie needs, weight goal, and
- *       the current temperature at their location to suggest appropriate meals.
+ *       Generiert einen personalisierten Ernährungsplan basierend auf Benutzerdaten und Standort.
+ *       Der Ernährungsplan berücksichtigt den Kalorienbedarf des Benutzers, sein Gewichtsziel und
+ *       die aktuelle Temperatur an seinem Standort, um passende Mahlzeiten vorzuschlagen.
  *     responses:
  *       200:
- *         description: Meal plan generated successfully
+ *         description: Ernährungsplan erfolgreich generiert
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MealPlan'
  *       400:
- *         description: Missing required user data
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Missing required parameters
- *                 required:
- *                   type: array
- *                   items:
- *                     type: string
- *                   example: ["gender", "age"]
- *                 currentData:
- *                   type: object
+ *         description: Fehlende erforderliche Benutzerdaten
  *       500:
- *         description: Error generating meal plan
+ *         description: Fehler bei der Generierung des Ernährungsplans
  */
-app.get("/get-meal-plan", async (req, res) => {
+app.get("/get_meal_plan", async (req, res) => {
   try {
     const {
       age,
@@ -737,11 +587,11 @@ app.get("/get-meal-plan", async (req, res) => {
  *   get:
  *     tags:
  *       - System Management
- *     summary: Health check
- *     description: Simple endpoint to check if the server is running
+ *     summary: Gesundheitscheck
+ *     description: Einfacher Endpunkt, um zu prüfen, ob der Server läuft
  *     responses:
  *       200:
- *         description: Server is healthy
+ *         description: Server ist gesund
  *         content:
  *           application/json:
  *             schema:
