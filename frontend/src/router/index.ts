@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import GenderSelection from '../views/GenderSelection.vue';
-import UserDetails from '../views/UserDetails.vue';
-import ActivityLevel from '../views/ActivityLevel.vue';
-import RecipeOverview from '../components/RecipeOverview.vue';
-import LocationSelection from '../views/LocationSelection.vue';
-import RecipeBreakfast from '../components/RecipeBreakfast.vue';
-import RecipeLunch from '../components/RecipeLunch.vue';
+import GenderSelection from '../views/GenderSelection.vue'
+import UserDetails from '../views/UserDetails.vue'
+import ActivityLevel from '../views/ActivityLevel.vue'
+import RecipeOverview from '../components/RecipeOverview.vue'
+import LocationSelection from '../views/LocationSelection.vue'
+import RecipeBreakfast from '../components/RecipeBreakfast.vue'
+import RecipeLunch from '../components/RecipeLunch.vue'
 import RecipeDinner from '../components/RecipeDinner.vue'
   import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs';
 
