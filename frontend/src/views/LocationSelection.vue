@@ -12,14 +12,18 @@
       <button
         @click="getLocation"
         class="px-6 py-2 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-700"
+        :disabled="isLoading || locationLoading"
       >
-        Aktuellen Standort abrufen
+        <span v-if="locationLoading">Standort wird abgefragt...</span>
+        <span v-else-if="isLoading">Lädt...</span>
+        <span v-else>Aktuellen Standort abrufen</span>
       </button>
+      <div v-if="locationError" class="text-red-500 text-center">{{ locationError }}</div>
       <div class="relative">
         <label class="block text-lg font-semibold mb-2">Stadt:</label>
         <input
           type="text"
-          v-model="city"
+          v-model="cityInput"
           @input="fetchCities"
           @blur="hideSuggestions"
           class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -27,13 +31,13 @@
         />
         <ul
           v-if="suggestedCities.length"
-          class="absolute z-10 bg-white border rounded-lg w-full mt-1 shadow-lg"
+          class="absolute z-10 bg-white dark:bg-gray-800 border rounded-lg w-full mt-1 shadow-lg"
         >
           <li
             v-for="suggestion in suggestedCities"
             :key="suggestion"
             @click="selectCity(suggestion)"
-            class="p-2 hover:bg-gray-200 cursor-pointer"
+            class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
           >
             {{ suggestion }}
           </li>
@@ -51,52 +55,128 @@
       <button
         @click="nextStep"
         class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+        :disabled="!cityInput || isLoading || locationLoading"
       >
-        Rezepte anzeigen
+        <span v-if="isLoading">Lädt...</span>
+        <span v-else>Rezepte anzeigen</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserDataStore } from '../stores/UserDataStore'
 
 const router = useRouter()
-const city = ref('')
-const country = ref('')
+const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = useUserDataStore()
+const cityInput = ref(userData.location || '')
 const suggestedCities = ref([])
+const locationLoading = ref(false)
+const locationError = ref('')
 
-const getLocation = () => {
+// Load data on component mount
+onMounted(async () => {
+  await loadFromBackend()
+  cityInput.value = userData.location || ''
+})
+
+const getLocation = async () => {
   if (navigator.geolocation) {
+    locationLoading.value = true
+    locationError.value = ''
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-        )
-        const data = await response.json()
-        city.value = data.address.city || data.address.town || ''
-        country.value = data.address.country || ''
+        try {
+          const { latitude, longitude } = position.coords
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`,
+            {
+              headers: {
+                'User-Agent': 'recipeGenerator',
+                'Accept-Language': 'de,en', // Add preferred languages
+              },
+            },
+          )
+
+          if (!response.ok) {
+            console.error('API response error:', await response.text())
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+
+          const data = await response.json()
+          // console.log('Location data received:', data)
+
+          const city =
+            data.address?.city ||
+            data.address?.town ||
+            data.address?.village ||
+            data.address?.municipality ||
+            data.address?.hamlet ||
+            ''
+          const country = data.address?.country || ''
+
+          if (city && country) {
+            cityInput.value = `${city}, ${country}`
+            updateUserData('location', cityInput.value)
+          } else {
+            locationError.value = 'Konnte Ihren Standort nicht ermitteln.'
+          }
+        } catch (error) {
+          console.error('Error processing location:', error)
+          locationError.value = 'Fehler beim Verarbeiten des Standorts.'
+        } finally {
+          locationLoading.value = false
+        }
       },
       (error) => {
         console.error('Geolocation error:', error)
+
+        let errorMessage = 'Fehler beim Abrufen des Standorts.'
+        if (error.code === 1) {
+          errorMessage =
+            'Standortzugriff verweigert. Bitte erlauben Sie den Zugriff in Ihren Browser-Einstellungen.'
+        } else if (error.code === 2) {
+          errorMessage = 'Standort nicht verfügbar. Bitte versuchen Sie es später erneut.'
+        } else if (error.code === 3) {
+          errorMessage =
+            'Zeitüberschreitung beim Abrufen des Standorts. Bitte versuchen Sie es erneut.'
+        }
+
+        locationError.value = errorMessage
+        locationLoading.value = false
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 0,
       },
     )
   } else {
-    alert('Geolocation wird von Ihrem Browser nicht unterstützt.')
+    locationError.value = 'Geolocation wird von Ihrem Browser nicht unterstützt.'
   }
 }
 
+let lastRequestTime = 0
+const minRequestInterval = 1000 // 1 second
+
 const fetchCities = async () => {
-  if (city.value.length > 2) {
+  if (cityInput.value.length > 2) {
+    const now = Date.now()
+    if (now - lastRequestTime < minRequestInterval) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, minRequestInterval - (now - lastRequestTime)),
+      )
+    }
+
+    lastRequestTime = Date.now()
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${city.value}&addressdetails=1&limit=5&class=place&type=city,town,village,hamlet`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityInput.value)}&addressdetails=1&limit=5&class=place&type=city,town,village,hamlet`,
       )
       const data = await response.json()
-
-      console.log('API Response:', data) // Log the API response
 
       // List of terms to exclude (to remove squares, roads, etc.)
       const excludeKeywords = ['square', 'road', 'highway', 'station', 'airport', 'park', 'plaza']
@@ -112,13 +192,9 @@ const fetchCities = async () => {
             item !== null && // Remove null results
             self.indexOf(item) === index && // Remove duplicates
             !excludeKeywords.some(
-              (
-                word, // Remove unwanted locations
-              ) => item.toLowerCase().includes(word),
+              (word) => item.toLowerCase().includes(word), // Remove unwanted locations
             ),
         )
-
-      console.log('Filtered Suggestions:', suggestedCities.value) // Log filtered results
     } catch (error) {
       console.error('Error fetching city suggestions:', error)
     }
@@ -134,10 +210,26 @@ const hideSuggestions = () => {
 }
 
 const selectCity = (selected) => {
-  city.value = selected
+  cityInput.value = selected
+  updateUserData('location', selected)
   suggestedCities.value = []
 }
 
 const prevStep = () => router.push('/activity')
-const nextStep = () => router.push('/recipes')
+
+const nextStep = async () => {
+  if (!cityInput.value) {
+    locationError.value = 'Bitte wählen Sie einen Standort aus'
+    return
+  }
+
+  try {
+    updateUserData('location', cityInput.value)
+    await saveToBackend()
+    router.push('/recipes')
+  } catch (error) {
+    console.error('Error saving location:', error)
+    locationError.value = 'Es gab ein Problem beim Senden der Daten.'
+  }
+}
 </script>
