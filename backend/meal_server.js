@@ -7,6 +7,9 @@ require("dotenv").config();
 const app = express();
 const PORT = 8000;
 
+const { swaggerUi, swaggerSpec } = require("./swagger");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(express.json());
 app.use(cors());
 
@@ -251,122 +254,203 @@ async function selectThreeMeals(calories, temperature) {
   return { breakfast, lunch, dinner, totalCalories };
 }
 
-// Store user data when received
-app.post("/api/user-data", async (req, res) => {
-  try {
-    // Validate incoming data
-    const { validated, errors, isValid } = validateUserData(req.body);
-
-    if (!isValid) {
-      return res.status(400).json({
-        error: "Invalid data provided",
-        details: errors,
-      });
-    }
-
-    // Update user data with validated values
-    userData = { ...userData, ...validated };
-    console.log("Updated user data:", userData);
-
-    res.json({
-      message: "Data received and validated successfully",
-      receivedData: validated,
-    });
-  } catch (error) {
-    console.error("Error processing request:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Get stored user data for frontend persistence
-app.get("/api/user-data", (req, res) => {
-  res.json(userData);
-});
-
-// Generate meal plan using stored user data
+/**
+ * @swagger
+ * /get_meal_plan:
+ *   get:
+ *     summary: Gibt einen personalisierten Ernährungsplan zurück.
+ *     parameters:
+ *       - in: query
+ *         name: age
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Alter des Nutzers in Jahren.
+ *       - in: query
+ *         name: weight
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Gewicht des Nutzers in Kilogramm.
+ *       - in: query
+ *         name: height
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: Körpergröße des Nutzers in cm.
+ *       - in: query
+ *         name: gender
+ *         schema:
+ *           type: string
+ *           enum: [male, female]
+ *         required: true
+ *         description: Geschlecht des Nutzers.
+ *       - in: query
+ *         name: activity_level
+ *         schema:
+ *           type: string
+ *           enum: [sedentary, lightly_active, moderately_active, very_active, extra_active]
+ *         required: true
+ *         description: Aktivitätslevel des Nutzers.
+ *       - in: query
+ *         name: goal
+ *         schema:
+ *           type: string
+ *           enum: [weight_loss, maintenance, weight_gain]
+ *         required: true
+ *         description: Ernährungsziel.
+ *       - in: query
+ *         name: location
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Standort des Nutzers (z. B. "Berlin, Germany").
+ *     responses:
+ *       200:
+ *         description: Erfolgreiche Antwort mit Mahlzeiten.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 kalorienbedarf:
+ *                   type: number
+ *                 gefühlteTemperatur:
+ *                   type: number
+ *                 mahlzeiten:
+ *                   type: object
+ *                   properties:
+ *                     frühstück:
+ *                       type: string
+ *                     mittagessen:
+ *                       type: string
+ *                     abendessen:
+ *                       type: string
+ *                 gesamtKalorien:
+ *                   type: number
+ *       400:
+ *         description: Fehlende Parameter.
+ *       500:
+ *         description: Interner Serverfehler.
+ */
 app.get("/get_meal_plan", async (req, res) => {
-  try {
-    const { age, weight, height, gender, activity_level, goal, location } =
-      userData;
+  // Store user data when received
+  app.post("/api/user-data", async (req, res) => {
+    try {
+      // Validate incoming data
+      const { validated, errors, isValid } = validateUserData(req.body);
 
-    // Validate required fields are present
-    if (
-      !age ||
-      !weight ||
-      !height ||
-      !gender ||
-      !activity_level ||
-      !goal ||
-      !location
-    ) {
-      return res.status(400).json({
-        error: "Missing required parameters",
-        required: [
-          "age",
-          "weight",
-          "height",
-          "gender",
-          "activity_level",
-          "goal",
-          "location",
-        ],
+      if (!isValid) {
+        return res.status(400).json({
+          error: "Invalid data provided",
+          details: errors,
+        });
+      }
+
+      // Update user data with validated values
+      userData = { ...userData, ...validated };
+      console.log("Updated user data:", userData);
+
+      res.json({
+        message: "Data received and validated successfully",
+        receivedData: validated,
       });
+    } catch (error) {
+      console.error("Error processing request:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
+  });
 
-    const calories = await calculateCalories(
-      age,
-      weight,
-      height,
-      gender,
-      activity_level,
-      goal
-    );
+  // Get stored user data for frontend persistence
+  app.get("/api/user-data", (req, res) => {
+    res.json(userData);
+  });
 
-    if (!calories) {
-      return res.status(500).json({ error: "Error calculating calories" });
+  // Generate meal plan using stored user data
+  app.get("/get_meal_plan", async (req, res) => {
+    try {
+      const { age, weight, height, gender, activity_level, goal, location } =
+        userData;
+
+      // Validate required fields are present
+      if (
+        !age ||
+        !weight ||
+        !height ||
+        !gender ||
+        !activity_level ||
+        !goal ||
+        !location
+      ) {
+        return res.status(400).json({
+          error: "Missing required parameters",
+          required: [
+            "age",
+            "weight",
+            "height",
+            "gender",
+            "activity_level",
+            "goal",
+            "location",
+          ],
+        });
+      }
+
+      const calories = await calculateCalories(
+        age,
+        weight,
+        height,
+        gender,
+        activity_level,
+        goal
+      );
+
+      if (!calories) {
+        return res.status(500).json({ error: "Error calculating calories" });
+      }
+
+      const coordinates = await getCoordinates(location);
+      if (!coordinates) {
+        return res.status(500).json({ error: "Error with geocoding" });
+      }
+
+      const feelsLikeTemp = await getFeelsLikeTemperature(
+        coordinates.latitude,
+        coordinates.longitude
+      );
+
+      if (feelsLikeTemp === null) {
+        return res.status(500).json({ error: "Error fetching temperature" });
+      }
+
+      const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
+
+      if (mealPlan.error) {
+        return res.status(500).json({ error: mealPlan.error });
+      }
+
+      res.json({
+        calorieRequirement: calories,
+        feelsLikeTemperature: feelsLikeTemp,
+        meals: {
+          breakfast: mealPlan.breakfast,
+          lunch: mealPlan.lunch,
+          dinner: mealPlan.dinner,
+        },
+        totalCalories: mealPlan.totalCalories,
+      });
+    } catch (error) {
+      console.error("Error fetching meal plan:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
+  });
 
-    const coordinates = await getCoordinates(location);
-    if (!coordinates) {
-      return res.status(500).json({ error: "Error with geocoding" });
-    }
+  // Health check endpoint
+  app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
 
-    const feelsLikeTemp = await getFeelsLikeTemperature(
-      coordinates.latitude,
-      coordinates.longitude
-    );
-
-    if (feelsLikeTemp === null) {
-      return res.status(500).json({ error: "Error fetching temperature" });
-    }
-
-    const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
-
-    if (mealPlan.error) {
-      return res.status(500).json({ error: mealPlan.error });
-    }
-
-    res.json({
-      calorieRequirement: calories,
-      feelsLikeTemperature: feelsLikeTemp,
-      meals: {
-        breakfast: mealPlan.breakfast,
-        lunch: mealPlan.lunch,
-        dinner: mealPlan.dinner,
-      },
-      totalCalories: mealPlan.totalCalories,
-    });
-  } catch (error) {
-    console.error("Error fetching meal plan:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });

@@ -11,3 +11,8 @@ Wenn Container läuft kommt unter http://localhost:8000/  der Text "Ernährungsp
 
 Beispiel Server-Abfrage:
 http://localhost:8000/get_meal_plan?age=25&weight=70&height=175&gender=male&activity_level=sedentary&goal=maintenance&location=Berlin
+
+
+OpenAPI:
+npm install swagger-jsdoc swagger-ui-express
+Server: http://localhost:8000/api-docs
