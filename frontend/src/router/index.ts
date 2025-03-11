@@ -4,6 +4,10 @@ import UserDetails from '../views/UserDetails.vue'
 import ActivityLevel from '../views/ActivityLevel.vue'
 import RecipeOverview from '../components/RecipeOverview.vue'
 import LocationSelection from '../views/LocationSelection.vue'
+import RecipeBreakfast from '../components/RecipeBreakfast.vue'
+import RecipeLunch from '../components/RecipeLunch.vue'
+import RecipeDinner from '../components/RecipeDinner.vue'
+  import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs';
 
 const routes = [
   { path: '/', component: GenderSelection },
@@ -11,6 +15,9 @@ const routes = [
   { path: '/activity', component: ActivityLevel },
   { path: '/recipes', component: RecipeOverview },
   { path: '/location', component: LocationSelection },
+  { path: '/recipe-breakfast', component: RecipeBreakfast },
+  { path: '/recipe-lunch', component: RecipeLunch},
+  { path: '/recipe-dinner', component: RecipeDinner},
 ]
 
 const router = createRouter({

@@ -31,21 +31,14 @@
 
         <!-- Mittagessen Card -->
         <div
-          class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-        >
-          <img src="" alt="Mittagessen" class="w-full h-48 object-cover" />
+          class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white">
+          <img src="" alt="Mittagessen" class="w-full h-48 object-cover">
           <div class="p-6">
-            <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
-              Mittagessen
-            </h2>
-            <p class="text-[#4A5759] mt-2 dark:text-gray-300">
-              Leckere Mittagsgerichte für Energie und Genuss!
-            </p>
-            <a
-              href=""
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >Mehr erfahren</a
-            >
+            <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">Mittagessen</h2>
+            <p class="text-[#4A5759] mt-2 dark:text-gray-300">Leckere Mittagsgerichte für Energie und Genuss!</p>
+            <router-link to="./recipe-lunch"
+              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">Mehr
+              erfahren</router-link>
           </div>
         </div>
 
@@ -75,8 +68,8 @@
 
 <script lang="ts">
 export default {
-  name: 'RecipeOverview',
-}
+  name: "RecipeOverview",
+};
 </script>
 
 <style scoped>
