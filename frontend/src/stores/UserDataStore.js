@@ -17,7 +17,7 @@ const isLoading = ref(false)
 // Clear cache on app start
 const clearCacheOnStartup = async () => {
   try {
-    console.log('Clearing cache on startup')
+    // console.log('Clearing cache on startup')
     await fetch('http://localhost:8000/api/clear-cache', {
       method: 'POST',
       headers: {
@@ -26,7 +26,7 @@ const clearCacheOnStartup = async () => {
       body: JSON.stringify({}),
       cache: 'no-store',
     })
-    console.log('Cache cleared on startup')
+    // console.log('Cache cleared on startup')
   } catch (error) {
     console.error('Error clearing cache on startup:', error)
   }
@@ -77,7 +77,7 @@ export function useUserDataStore() {
   // Save all current data to backend
   const saveToBackend = async () => {
     try {
-      console.log('Sending user data:', JSON.stringify(userData))
+      // console.log('Sending user data:', JSON.stringify(userData))
 
       isLoading.value = true
       const response = await fetch('http://localhost:8000/api/user-data', {
@@ -89,15 +89,15 @@ export function useUserDataStore() {
       })
 
       // Log response for debugging
-      const responseText = await response.text()
-      console.log('Response:', response.status, responseText)
+      // const responseText = await response.text()
+      // console.log('Response:', response.status, responseText)
 
       if (!response.ok) {
         throw new Error(`Failed to save user data: ${responseText}`)
       }
 
-      return JSON.parse(responseText)
-      // return await response.json()
+      // return JSON.parse(responseText)
+      return await response.json()
     } catch (error) {
       console.error('Error saving user data:', error)
       throw error

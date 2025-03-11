@@ -416,14 +416,6 @@ app.post("/api/user-data", async (req, res) => {
  */
 app.post("/api/clear-cache", async (req, res) => {
   try {
-    // Clear all cached data and print before/after counts
-    console.log("Before clearing - Cache sizes:");
-    console.log(`Coordinates cache: ${coordinatesCache.keys().length} items`);
-    console.log(`Temperature cache: ${temperatureCache.keys().length} items`);
-    console.log(`Calories cache: ${caloriesCache.keys().length} items`);
-    console.log(`Recipes cache: ${recipesCache.keys().length} items`);
-    console.log(`User data: ${Object.keys(userData).length} properties`);
-
     // Reset user data
     userData = {};
 
@@ -432,13 +424,6 @@ app.post("/api/clear-cache", async (req, res) => {
     temperatureCache.flushAll();
     caloriesCache.flushAll();
     recipesCache.flushAll();
-
-    console.log("After clearing - Cache sizes:");
-    console.log(`Coordinates cache: ${coordinatesCache.keys().length} items`);
-    console.log(`Temperature cache: ${temperatureCache.keys().length} items`);
-    console.log(`Calories cache: ${caloriesCache.keys().length} items`);
-    console.log(`Recipes cache: ${recipesCache.keys().length} items`);
-    console.log(`User data: ${Object.keys(userData).length} properties`);
 
     console.log("All caches cleared");
     res.json({ message: "Cache cleared successfully" });
