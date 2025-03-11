@@ -10,7 +10,7 @@
 
     <!-- Zurück zur Übersicht Button -->
     <div class="flex justify mt-4">
-      <router-link to="/overview" class="bg-[#D4D0C4] text-[#4A5759] font-semibold py-2 px-6 rounded-full shadow-sm 
+      <router-link to="/recipes" class="bg-[#D4D0C4] text-[#4A5759] font-semibold py-2 px-6 rounded-full shadow-sm 
            transition duration-300 transform hover:scale-105 
            hover:bg-[#4A5759] hover:text-[#D4D0C4] 
            dark:bg-[#3E4B4D] dark:text-white dark:hover:bg-[#E89BA7] dark:hover:text-white">
