@@ -5,7 +5,7 @@
     <h1 class="text-3xl font-bold mb-10 text-center">Wo wohnen Sie?</h1>
     <p class="max-w-3xs text-center text-gray-600 dark:text-gray-300">
       Ihr Standort wird benutzt um die Rezepte basierend auf der aktuellen Temperatur zu
-      personalisieren.
+      personalisieren. (Optional)
     </p>
 
     <div class="w-full max-w-lg flex flex-col gap-y-6">
@@ -55,7 +55,7 @@
       <button
         @click="nextStep"
         class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
-        :disabled="!cityInput || isLoading || locationLoading"
+        :disabled="isLoading || locationLoading"
       >
         <span v-if="isLoading">Lädt...</span>
         <span v-else>Rezepte anzeigen</span>
@@ -67,7 +67,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserDataStore } from '../stores/UserDataStore'
+import { useUserDataStore } from '../stores/UserDataStore.js'
 
 const router = useRouter()
 const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = useUserDataStore()
@@ -218,12 +218,8 @@ const selectCity = (selected) => {
 const prevStep = () => router.push('/activity')
 
 const nextStep = async () => {
-  if (!cityInput.value) {
-    locationError.value = 'Bitte wählen Sie einen Standort aus'
-    return
-  }
-
   try {
+    // Update location in store (even if empty)
     updateUserData('location', cityInput.value)
     await saveToBackend()
     router.push('/recipes')

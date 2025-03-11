@@ -36,7 +36,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserDataStore } from '../stores/UserDataStore'
+import { useUserDataStore } from '../stores/UserDataStore.js'
 
 const router = useRouter()
 const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = useUserDataStore()
