@@ -21,11 +21,9 @@
             <p class="text-[#4A5759] mt-2 dark:text-gray-300">
               Starte deinen Tag mit leckeren und gesunden Frühstücksrezepten!
             </p>
-            <a
-              href=""
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >Mehr erfahren</a
-            >
+            <router-link to="./recipe-breakfast"
+              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">Mehr
+              erfahren</router-link>
           </div>
         </div>
 
@@ -54,11 +52,9 @@
             <p class="mt-2 text-[#4A5759] dark:text-gray-300">
               Genieße dein Abendessen mit einer Vielfalt an leckeren Rezepten!
             </p>
-            <a
-              href=""
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >Mehr erfahren</a
-            >
+            <router-link to="./recipe-dinner"
+              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">Mehr
+              erfahren</router-link>
           </div>
         </div>
       </div>
