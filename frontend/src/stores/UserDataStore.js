@@ -7,7 +7,7 @@ const userData = reactive({
   height: 170,
   weight: 70,
   activity_level: null,
-  goal: 'maintain',
+  goal: 'maintenance',
   location: '',
 })
 
@@ -50,7 +50,7 @@ export function useUserDataStore() {
         height: 170,
         weight: 70,
         activity_level: null,
-        goal: 'maintain',
+        goal: 'maintenance',
         location: '',
       })
 

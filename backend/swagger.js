@@ -52,8 +52,8 @@ const options = {
             },
             goal: {
               type: "string",
-              enum: ["lose", "maintain", "gain"],
-              default: "maintain",
+              enum: ["weight_loss", "maintenance", "weight_gain"],
+              default: "maintenance",
               description: "Ziel des Benutzers (abnehmen, halten, zunehmen)",
             },
             location: {

@@ -86,7 +86,7 @@ const userDataSchema = {
   goal: (val) =>
     val === undefined || val === null
       ? true
-      : ["lose", "maintain", "gain"].includes(val),
+      : ["weight_loss", "maintenance", "weight_gain"].includes(val),
 
   location: (val) => {
     // Always return true for undefined, null, or empty string
@@ -484,7 +484,7 @@ app.get("/get_meal_plan", async (req, res) => {
       height,
       gender,
       activity_level,
-      goal = "maintain",
+      goal = "maintenance",
       location,
     } = userData;
 
@@ -505,7 +505,7 @@ app.get("/get_meal_plan", async (req, res) => {
     }
 
     // Use default goal if not set
-    const calculationGoal = goal || "maintain";
+    const calculationGoal = goal || "maintenance";
 
     // Calculate calories without goal and location if necessary
     const calories = await calculateCalories(

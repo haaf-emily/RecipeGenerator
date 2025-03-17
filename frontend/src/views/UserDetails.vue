@@ -49,9 +49,9 @@
           @change="updateGoal"
           class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="maintain">Gewicht halten</option>
-          <option value="deficit">Gewicht verlieren</option>
-          <option value="surplus">Gewicht zunehmen</option>
+          <option value="maintenance">Gewicht halten</option>
+          <option value="weight_loss">Gewicht verlieren</option>
+          <option value="weight_gain">Gewicht zunehmen</option>
         </select>
       </div> -->
     </div>
@@ -86,7 +86,7 @@ const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = 
 const age = ref(userData.age || 25)
 const height = ref(userData.height || 170)
 const weight = ref(userData.weight || 70)
-const goal = ref(userData.goal || 'maintain')
+const goal = ref(userData.goal || 'maintenance')
 
 // Load data on component mount
 onMounted(async () => {
@@ -94,7 +94,7 @@ onMounted(async () => {
   age.value = userData.age || 25
   height.value = userData.height || 170
   weight.value = userData.weight || 70
-  goal.value = userData.goal || 'maintain'
+  goal.value = userData.goal || 'maintenance'
 })
 
 // Update functions to sync with store
