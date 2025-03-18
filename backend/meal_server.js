@@ -373,7 +373,7 @@ async function selectThreeMeals(calories, temperature) {
  */
 app.post("/api/user-data", async (req, res) => {
   try {
-    console.log("Received user data:", req.body);
+    // console.log("Received user data:", req.body);
 
     // Use the more lenient validation
     const { validated, errors, isValid } = validateUserData(req.body);
@@ -388,7 +388,7 @@ app.post("/api/user-data", async (req, res) => {
 
     // Update user data with validated values, keeping existing data
     userData = { ...userData, ...validated };
-    console.log("Updated user data:", userData);
+    // console.log("Updated user data:", userData);
 
     res.json({
       message: "Data received and validated successfully",
@@ -477,8 +477,6 @@ app.get("/api/user-data", (req, res) => {
  *         description: Fehler bei der Generierung des Ernährungsplans
  */
 app.get("/get_meal_plan", async (req, res) => {
-  console.log("\n======= GET_MEAL_PLAN ENDPOINT CALLED =======");
-
   try {
     const {
       age,
@@ -520,7 +518,7 @@ app.get("/get_meal_plan", async (req, res) => {
     );
 
     // Log after calorie calculation
-    console.log("Calorie calculation result:", calories);
+    // console.log("Calorie calculation result:", calories);
 
     if (!calories) {
       return res.status(500).json({ error: "Error calculating calories" });
@@ -537,20 +535,20 @@ app.get("/get_meal_plan", async (req, res) => {
           coordinates.latitude,
           coordinates.longitude
         );
-        console.log("Temperature result:", tempResult);
+        // console.log("Temperature result:", tempResult);
 
         if (tempResult !== null) {
           feelsLikeTemp = tempResult;
-          console.log("Using actual temperature:", feelsLikeTemp);
+          // console.log("Using actual temperature:", feelsLikeTemp);
         }
       }
     }
 
     const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
-    console.log(
-      "Meal plan selection result:",
-      JSON.stringify(mealPlan, null, 2)
-    );
+    // console.log(
+    //   "Meal plan selection result:",
+    //   JSON.stringify(mealPlan, null, 2)
+    // );
 
     if (mealPlan.error) {
       return res.status(500).json({ error: mealPlan.error });
@@ -572,8 +570,6 @@ app.get("/get_meal_plan", async (req, res) => {
       },
       totalCalories: mealPlan.totalCalories,
     };
-
-    console.log("======= GET_MEAL_PLAN ENDPOINT COMPLETED =======\n");
 
     // Send the response only once
     res.json(response);

@@ -37,28 +37,32 @@
       >
         <div class="mb-6 max-w-2xl">
           <table class="w-auto text-lg dark:text-white">
-            <tr>
-              <td class="font-bold text-right pr-2">Dein täglicher Kalorienbedarf:</td>
-              <td class="text-left">{{ formatCalories(mealPlanData.calorieRequirement) }} kcal</td>
-            </tr>
-            <tr v-if="mealPlanData.locationUsed">
-              <td class="font-bold text-right pr-2">Dein Standort:</td>
-              <td class="text-left">
-                {{ mealPlanData.locationUsed }}
-              </td>
-            </tr>
-            <tr v-if="mealPlanData.locationUsed">
-              <td class="font-bold text-right pr-2">Es ist gerade</td>
-              <td class="text-left">{{ mealPlanData.feelsLikeTemperature }}°C</td>
-            </tr>
-            <tr>
-              <td class="font-bold text-right pr-2 text-green-600 dark:text-green-400">
-                Gesamtkalorien vom Ernährungsplan:
-              </td>
-              <td class="text-left text-green-600 dark:text-green-400">
-                {{ formatCalories(mealPlanData.totalCalories) }} kcal
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td class="font-bold text-right pr-2">Dein täglicher Kalorienbedarf:</td>
+                <td class="text-left">
+                  {{ formatCalories(mealPlanData.calorieRequirement) }} kcal
+                </td>
+              </tr>
+              <tr v-if="mealPlanData.locationUsed">
+                <td class="font-bold text-right pr-2">Dein Standort:</td>
+                <td class="text-left">
+                  {{ mealPlanData.locationUsed }}
+                </td>
+              </tr>
+              <tr v-if="mealPlanData.locationUsed">
+                <td class="font-bold text-right pr-2">Es ist gerade</td>
+                <td class="text-left">{{ mealPlanData.feelsLikeTemperature }}°C</td>
+              </tr>
+              <tr>
+                <td class="font-bold text-right pr-2 text-green-600 dark:text-green-400">
+                  Gesamtkalorien vom Ernährungsplan:
+                </td>
+                <td class="text-left text-green-600 dark:text-green-400">
+                  {{ formatCalories(mealPlanData.totalCalories) }} kcal
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
