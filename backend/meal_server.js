@@ -556,7 +556,8 @@ app.get("/get_meal_plan", async (req, res) => {
       return res.status(500).json({ error: mealPlan.error });
     }
 
-    res.json({
+    // Create the response object
+    const response = {
       calorieRequirement: calories,
       goal: calculationGoal,
       feelsLikeTemperature: feelsLikeTemp,
@@ -570,9 +571,11 @@ app.get("/get_meal_plan", async (req, res) => {
         dinner: mealPlan.dinner,
       },
       totalCalories: mealPlan.totalCalories,
-    });
+    };
+
     console.log("======= GET_MEAL_PLAN ENDPOINT COMPLETED =======\n");
 
+    // Send the response only once
     res.json(response);
   } catch (error) {
     console.error("Error fetching meal plan:", error);
