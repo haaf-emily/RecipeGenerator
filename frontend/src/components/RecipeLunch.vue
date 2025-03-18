@@ -1,9 +1,9 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-b from-white to-gray-100 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 text-gray-900 font-sans dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 dark:text-white"
+    class="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 text-gray-900 font-sans dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 dark:text-white"
   >
     <div class="h-5"></div>
-    <div class="bg-[#4A5759] py-6 shadow-md mb-16 w-full dark:bg-[#2C3E50]">
+    <div class="bg-[#4A5759] py-6 shadow-md mb-16 w-full dark:bg-[#2C3E50] rounded">
       <h1 class="text-4xl font-bold text-center text-white">
         {{ lunch.title || 'Mittagessen wird geladen...' }}
       </h1>

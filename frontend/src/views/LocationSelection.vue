@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-10 gap-y-12 flex-grow"
+    class="flex flex-col items-center justify-center text-gray-900 dark:text-gray-100 p-10 gap-y-12 flex-grow"
   >
     <h1 class="text-3xl font-bold mb-10 text-center">Wo wohnen Sie?</h1>
     <p class="max-w-3xs text-center text-gray-600 dark:text-gray-300">
