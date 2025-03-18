@@ -477,6 +477,8 @@ app.get("/api/user-data", (req, res) => {
  *         description: Fehler bei der Generierung des Ernährungsplans
  */
 app.get("/get_meal_plan", async (req, res) => {
+  console.log("\n======= GET_MEAL_PLAN ENDPOINT CALLED =======");
+
   try {
     const {
       age,
@@ -517,6 +519,9 @@ app.get("/get_meal_plan", async (req, res) => {
       calculationGoal
     );
 
+    // Log after calorie calculation
+    console.log("Calorie calculation result:", calories);
+
     if (!calories) {
       return res.status(500).json({ error: "Error calculating calories" });
     }
@@ -532,14 +537,20 @@ app.get("/get_meal_plan", async (req, res) => {
           coordinates.latitude,
           coordinates.longitude
         );
+        console.log("Temperature result:", tempResult);
 
         if (tempResult !== null) {
           feelsLikeTemp = tempResult;
+          console.log("Using actual temperature:", feelsLikeTemp);
         }
       }
     }
 
     const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
+    console.log(
+      "Meal plan selection result:",
+      JSON.stringify(mealPlan, null, 2)
+    );
 
     if (mealPlan.error) {
       return res.status(500).json({ error: mealPlan.error });
@@ -560,6 +571,9 @@ app.get("/get_meal_plan", async (req, res) => {
       },
       totalCalories: mealPlan.totalCalories,
     });
+    console.log("======= GET_MEAL_PLAN ENDPOINT COMPLETED =======\n");
+
+    res.json(response);
   } catch (error) {
     console.error("Error fetching meal plan:", error);
     res.status(500).json({ error: "Internal server error" });
