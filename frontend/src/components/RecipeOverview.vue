@@ -8,7 +8,7 @@
       </div>
 
       <!-- Loading state -->
-      <div v-if="loading" class="flex justify-center items-center py-16">
+      <div v-if="isLoading" class="flex justify-center items-center py-16">
         <div
           class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E89BA7]"
         ></div>
@@ -23,7 +23,7 @@
         <strong class="font-bold">Fehler!</strong>
         <span class="block sm:inline"> {{ error }}</span>
         <button
-          @click="fetchMealPlan"
+          @click="loadMealPlan(true)"
           class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
         >
           Erneut versuchen
@@ -32,35 +32,31 @@
 
       <!-- Meal plan info -->
       <div
-        v-else-if="mealPlan"
+        v-else-if="mealPlanData"
         class="mb-8 p-4 bg-white dark:bg-[#2C3E50] rounded-lg shadow flex justify-center"
       >
         <div class="mb-6 max-w-2xl">
           <table class="w-auto text-lg dark:text-white">
             <tr>
               <td class="font-bold text-right pr-2">Dein täglicher Kalorienbedarf:</td>
-              <td class="text-left">{{ formatCalories(mealPlan.calorieRequirement) }} kcal</td>
+              <td class="text-left">{{ formatCalories(mealPlanData.calorieRequirement) }} kcal</td>
             </tr>
-            <!-- <tr>
-          <td class="font-bold text-right pr-4">Ziel:</td>
-          <td class="text-left">{{ formatGoal(mealPlan.goal) }}</td>
-        </tr> -->
-            <tr v-if="mealPlan.locationUsed">
+            <tr v-if="mealPlanData.locationUsed">
               <td class="font-bold text-right pr-2">Dein Standort:</td>
               <td class="text-left">
-                {{ mealPlan.locationUsed }}
+                {{ mealPlanData.locationUsed }}
               </td>
             </tr>
-            <tr v-if="mealPlan.locationUsed">
+            <tr v-if="mealPlanData.locationUsed">
               <td class="font-bold text-right pr-2">Es ist gerade</td>
-              <td class="text-left">{{ mealPlan.feelsLikeTemperature }}°C</td>
+              <td class="text-left">{{ mealPlanData.feelsLikeTemperature }}°C</td>
             </tr>
             <tr>
               <td class="font-bold text-right pr-2 text-green-600 dark:text-green-400">
                 Gesamtkalorien vom Ernährungsplan:
               </td>
               <td class="text-left text-green-600 dark:text-green-400">
-                {{ formatCalories(mealPlan.totalCalories) }} kcal
+                {{ formatCalories(mealPlanData.totalCalories) }} kcal
               </td>
             </tr>
           </table>
@@ -74,10 +70,14 @@
           class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
         >
           <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.breakfast?.image_urls?.[0] || '' : ''"
+            :src="
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.breakfast?.image_urls?.[0] || ''
+                : ''
+            "
             :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.breakfast?.title || 'Frühstück'
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.breakfast?.title || 'Frühstück'
                 : 'Frühstück'
             "
             class="w-full h-48 object-cover"
@@ -87,16 +87,16 @@
               Frühstück
             </h2>
             <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.breakfast"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
               class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
             >
-              {{ mealPlan.meals.breakfast.title }}
+              {{ mealPlanData.meals.breakfast.title }}
             </h3>
             <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.breakfast"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
               class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
             >
-              {{ formatCalories(mealPlan.meals.breakfast.nutrition.kcal) }} kcal
+              {{ formatCalories(mealPlanData.meals.breakfast.nutrition.kcal) }} kcal
             </p>
             <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
               Starte deinen Tag mit leckeren und gesunden Frühstücksrezepten!
@@ -115,10 +115,14 @@
           class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
         >
           <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.lunch?.image_urls?.[0] || '' : ''"
+            :src="
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.lunch?.image_urls?.[0] || ''
+                : ''
+            "
             :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.lunch?.title || 'Mittagessen'
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.lunch?.title || 'Mittagessen'
                 : 'Mittagessen'
             "
             class="w-full h-48 object-cover"
@@ -128,16 +132,16 @@
               Mittagessen
             </h2>
             <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.lunch"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
               class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
             >
-              {{ mealPlan.meals.lunch.title }}
+              {{ mealPlanData.meals.lunch.title }}
             </h3>
             <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.lunch"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
               class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
             >
-              {{ formatCalories(mealPlan.meals.lunch.nutrition.kcal) }} kcal
+              {{ formatCalories(mealPlanData.meals.lunch.nutrition.kcal) }} kcal
             </p>
             <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
               Leckere Mittagsgerichte für Energie und Genuss!
@@ -156,10 +160,14 @@
           class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
         >
           <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.dinner?.image_urls?.[0] || '' : ''"
+            :src="
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.dinner?.image_urls?.[0] || ''
+                : ''
+            "
             :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.dinner?.title || 'Abendessen'
+              mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.dinner?.title || 'Abendessen'
                 : 'Abendessen'
             "
             class="w-full h-48 object-cover"
@@ -169,16 +177,16 @@
               Abendessen
             </h2>
             <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.dinner"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
               class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
             >
-              {{ mealPlan.meals.dinner.title }}
+              {{ mealPlanData.meals.dinner.title }}
             </h3>
             <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.dinner"
+              v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
               class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
             >
-              {{ formatCalories(mealPlan.meals.dinner.nutrition.kcal) }} kcal
+              {{ formatCalories(mealPlanData.meals.dinner.nutrition.kcal) }} kcal
             </p>
             <p v-else class="mt-2 text-[#4A5759] dark:text-gray-300">
               Genieße dein Abendessen mit einer Vielfalt an leckeren Rezepten!
@@ -197,16 +205,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserDataStore } from '../stores/UserDataStore'
+import { useMealPlanStore } from '../stores/MealPlanStore'
 
 const router = useRouter()
-const { userData, isLoading, saveToBackend, loadFromBackend } = useUserDataStore()
-const loading = ref(true)
-const error = ref('')
-const mealPlan = ref(null)
-const API_URL = 'http://localhost:8000'
+const { userData, loadFromBackend } = useUserDataStore()
+const { mealPlanData, isLoading, error, fetchMealPlan } = useMealPlanStore()
 
 // Format calories to be a whole number
 const formatCalories = (calories) => {
@@ -223,54 +229,19 @@ const formatCalories = (calories) => {
   return Math.round(calories)
 }
 
-// Format goal for display
-const formatGoal = (goal) => {
-  if (!goal) return ''
+// Load meal plan data
+const loadMealPlan = async (forceRefresh = false) => {
+  const result = await fetchMealPlan(forceRefresh)
 
-  const goalMap = {
-    weight_loss: 'Gewichtsabnahme',
-    maintenance: 'Gewichtserhaltung',
-    weight_gain: 'Gewichtszunahme',
-  }
-
-  return goalMap[goal] || goal
-}
-
-// Fetch meal plan data
-const fetchMealPlan = async () => {
-  loading.value = true
-  error.value = ''
-
-  try {
-    const response = await fetch(`${API_URL}/get_meal_plan`)
-
-    if (!response.ok) {
-      if (response.status === 400) {
-        const data = await response.json()
-        if (data.required && data.required.length > 0) {
-          throw new Error(`Bitte füllen Sie die folgenden Felder aus: ${data.required.join(', ')}`)
-        }
-      }
-      throw new Error(`Server antwortet mit Status: ${response.status}`)
-    }
-
-    const data = await response.json()
-    mealPlan.value = data
-
-    // Store meal plan in localStorage for recipe detail pages
-    localStorage.setItem('mealPlan', JSON.stringify(data))
-  } catch (err) {
-    console.error('Error fetching meal plan:', err)
-    error.value = err.message || 'Ein Fehler ist aufgetreten beim Abrufen der Rezepte'
-
+  if (
+    !result.success &&
+    result.error &&
+    result.error.includes('Bitte füllen Sie die folgenden Felder aus')
+  ) {
     // If missing user data, redirect after a delay
-    if (err.message && err.message.includes('Bitte füllen Sie die folgenden Felder aus')) {
-      setTimeout(() => {
-        router.push('/')
-      }, 3000)
-    }
-  } finally {
-    loading.value = false
+    setTimeout(() => {
+      router.push('/')
+    }, 3000)
   }
 }
 
@@ -279,6 +250,6 @@ onMounted(async () => {
   await loadFromBackend()
 
   // Then fetch meal plan
-  fetchMealPlan()
+  loadMealPlan()
 })
 </script>

@@ -59,24 +59,6 @@
     >
       <div class="flex flex-col md:flex-row items-center justify-between gap-8 w-full">
         <div class="flex flex-col md:flex-row items-center justify-center gap-8 w-full">
-          <!-- Linke Sektion (Rating) -->
-          <!-- <div class="flex flex-col items-center md:items-start w-[20%]">
-            <p class="text-[#E89BA7] font-bold mb-2 text-lg dark:text-[#FF9F7F]">
-              {{ lunch.rating?.ratingValue || 0 }}
-            </p>
-            <div
-              class="w-36 h-4 bg-gray-200 rounded-full relative overflow-hidden dark:bg-gray-600"
-            >
-              <div
-                class="h-4 bg-gradient-to-r from-[#D4D0C4] to-[#AEC2AF] rounded-full transition-all duration-500"
-                :style="{ width: ((lunch.rating?.ratingValue || 0) / 5) * 100 + '%' }"
-              ></div>
-            </div>
-          </div> -->
-
-          <!-- Mittellinie (leicht nach links verschoben) -->
-          <!-- <div class="hidden md:block w-px bg-gray-300 h-24 dark:bg-gray-500 mx-6"></div> -->
-
           <!-- Rechte Sektion (Datenpunkte) -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-center w-[75%]">
             <div class="flex flex-col items-center p-4">
@@ -107,24 +89,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Tags -->
-    <!-- <div v-if="!loading && !error" class="h-10"></div>
-    <div v-if="!loading && !error" class="flex gap-6 justify-center mt-12 text-xs">
-      <span
-        class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF] dark:bg-[#2C3E50] dark:text-white dark:border-gray-600"
-        >#vegan</span
-      >
-      <span
-        class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF] dark:bg-[#2C3E50] dark:text-white dark:border-gray-600"
-        >#glutenfrei</span
-      >
-      <span
-        class="bg-white text-[#4A5759] py-1 px-4 rounded-full shadow-sm border border-[#AEC2AF] dark:bg-[#2C3E50] dark:text-white dark:border-gray-600"
-        >#gesund</span
-      >
-    </div>
-    <div v-if="!loading && !error" class="h-10"></div> -->
 
     <!-- Zutaten -->
     <div v-if="!loading && !error" class="h-5"></div>
@@ -167,71 +131,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useMealPlanStore } from '../stores/MealPlanStore'
 
 const router = useRouter()
-const lunch = ref({
-  title: '',
-  image_urls: [''],
-  ingredients: [],
-  nutrition: {
-    kcal: 0,
-  },
-  portions: 0,
-  rating: {
-    ratingValue: 0,
-    ratingCount: 0,
-  },
-  source: '',
-})
-const loading = ref(true)
-const error = ref('')
-const API_URL = 'http://localhost:8000'
+const { mealPlanData, isLoading, error: storeError, fetchMealPlan } = useMealPlanStore()
 
-// Fetch lunch data from API
-const fetchMealPlan = async () => {
-  loading.value = true
-  error.value = ''
+// Get lunch data from the store
+const lunch = computed(() => mealPlanData.meals?.lunch || null)
 
-  try {
-    // First, try to get from localStorage if available
-    const storedMealPlan = localStorage.getItem('mealPlan')
-    if (storedMealPlan) {
-      const data = JSON.parse(storedMealPlan)
-      if (data && data.meals && data.meals.lunch) {
-        lunch.value = data.meals.lunch
-        loading.value = false
-        return
-      }
+onMounted(async () => {
+  // Only fetch data if we don't already have it
+  if (!lunch.value) {
+    const result = await fetchMealPlan()
+    if (!result.success) {
+      // If there's an error and we can't get the data, go back to the overview
+      setTimeout(() => {
+        router.push('/recipes')
+      }, 3000)
     }
-
-    // If not in localStorage, fetch from API
-    const response = await fetch(`${API_URL}/get_meal_plan`)
-
-    if (!response.ok) {
-      throw new Error(`Server antwortet mit Status: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    if (!data || !data.meals || !data.meals.lunch) {
-      throw new Error('Keine Mittagessen-Daten verfügbar')
-    }
-
-    lunch.value = data.meals.lunch
-
-    // Store in localStorage for future use
-    localStorage.setItem('mealPlan', JSON.stringify(data))
-  } catch (err) {
-    console.error('Error fetching lunch data:', err)
-    error.value = err.message || 'Ein Fehler ist aufgetreten beim Abrufen des Rezepts'
-  } finally {
-    loading.value = false
   }
-}
-
-onMounted(() => {
-  fetchMealPlan()
 })
 </script>
