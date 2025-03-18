@@ -26,7 +26,7 @@
           v-model="cityInput"
           @input="fetchCities"
           @blur="hideSuggestions"
-          class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:[#86AC86]"
           placeholder="Stadt eingeben..."
         />
         <ul

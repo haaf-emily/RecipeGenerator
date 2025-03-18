@@ -298,7 +298,7 @@ async function getRecipesByCategory(category) {
 async function selectThreeMeals(calories, temperature) {
   let categories;
   if (temperature < 10) {
-    categories = ["Warme Frühstücksgerichte", "Suppe", "Deftiges Abendessen"];
+    categories = ["Frühstück", "Suppe", "Deftiges Abendessen"];
   } else if (temperature > 20) {
     categories = ["Leichtes Frühstück", "Salate", "Leichtes Abendessen"];
   } else {
@@ -338,7 +338,6 @@ async function selectThreeMeals(calories, temperature) {
 }
 
 // === API ENDPOINTS ===
-
 /**
  * @swagger
  * /api/user-data:
