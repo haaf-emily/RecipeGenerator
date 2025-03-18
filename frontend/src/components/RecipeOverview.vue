@@ -17,189 +17,227 @@
           <h1 class="text-4xl font-bold text-center text-white">Rezept Übersicht</h1>
         </div>
 
-      <!-- Loading state -->
-      <div v-if="loading" class="flex justify-center items-center py-16">
+        <!-- Error message -->
         <div
-          class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E89BA7]"
-        ></div>
-        <span class="ml-4 text-lg dark:text-white">Rezepte werden geladen...</span>
-      </div>
-
-      <!-- Error message -->
-      <div
-        v-else-if="error"
-        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-8"
-      >
-        <strong class="font-bold">Fehler!</strong>
-        <span class="block sm:inline"> {{ error }}</span>
-        <button
-          @click="fetchMealPlan"
-          class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          v-if="error"
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-8"
         >
-          Erneut versuchen
-        </button>
-      </div>
-
-      <!-- Meal plan info -->
-      <div
-        v-else-if="mealPlan"
-        class="mb-8 p-4 bg-white dark:bg-[#2C3E50] rounded-lg shadow flex justify-center"
-      >
-        <div class="mb-6 max-w-2xl">
-          <table class="w-auto text-lg dark:text-white">
-            <tr>
-              <td class="font-bold text-right pr-2">Dein täglicher Kalorienbedarf:</td>
-              <td class="text-left">{{ formatCalories(mealPlan.calorieRequirement) }} kcal</td>
-            </tr>
-            <!-- <tr>
-          <td class="font-bold text-right pr-4">Ziel:</td>
-          <td class="text-left">{{ formatGoal(mealPlan.goal) }}</td>
-        </tr> -->
-            <tr v-if="mealPlan.locationUsed">
-              <td class="font-bold text-right pr-2">Dein Standort:</td>
-              <td class="text-left">
-                {{ mealPlan.locationUsed }}
-              </td>
-            </tr>
-            <tr v-if="mealPlan.locationUsed">
-              <td class="font-bold text-right pr-2">Es ist gerade</td>
-              <td class="text-left">{{ mealPlan.feelsLikeTemperature }}°C</td>
-            </tr>
-            <tr>
-              <td class="font-bold text-right pr-2 text-green-600 dark:text-green-400">
-                Gesamtkalorien vom Ernährungsplan:
-              </td>
-              <td class="text-left text-green-600 dark:text-green-400">
-                {{ formatCalories(mealPlan.totalCalories) }} kcal
-              </td>
-            </tr>
-          </table>
+          <strong class="font-bold">Fehler!</strong>
+          <span class="block sm:inline"> {{ error }}</span>
+          <button
+            @click="loadMealPlan(true)"
+            class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Erneut versuchen
+          </button>
         </div>
-      </div>
 
-      <div class="h-5"></div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Frühstück Card -->
+        <!-- Meal plan info -->
         <div
-          class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
+          v-else-if="mealPlanData"
+          class="mb-8 p-4 bg-white dark:bg-[#2C3E50] rounded-lg shadow flex justify-center"
         >
-          <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.breakfast?.image_urls?.[0] || '' : ''"
-            :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.breakfast?.title || 'Frühstück'
-                : 'Frühstück'
-            "
-            class="w-full h-48 object-cover"
-          />
-          <div class="p-6">
-            <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
-              Frühstück
-            </h2>
-            <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.breakfast"
-              class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
-            >
-              {{ mealPlan.meals.breakfast.title }}
-            </h3>
-            <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.breakfast"
-              class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-            >
-              {{ formatCalories(mealPlan.meals.breakfast.nutrition.kcal) }} kcal
-            </p>
-            <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
-              Starte deinen Tag mit leckeren und gesunden Frühstücksrezepten!
-            </p>
-            <router-link
-              to="./recipe-breakfast"
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-            >
-              Mehr erfahren
-            </router-link>
+          <div class="mb-6 max-w-2xl">
+            <table class="w-auto text-lg dark:text-white">
+              <tbody>
+                <tr>
+                  <td class="font-bold text-right pr-2">Dein täglicher Kalorienbedarf:</td>
+                  <td class="text-left">
+                    {{ formatCalories(mealPlanData.calorieRequirement) }} kcal
+                  </td>
+                </tr>
+                <tr v-if="mealPlanData.locationUsed">
+                  <td class="font-bold text-right pr-2">Dein Standort:</td>
+                  <td class="text-left">
+                    {{ mealPlanData.locationUsed }}
+                  </td>
+                </tr>
+                <tr v-if="mealPlanData.locationUsed">
+                  <td class="font-bold text-right pr-2">Es ist gerade</td>
+                  <td class="text-left">{{ mealPlanData.feelsLikeTemperature }}°C</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-right pr-2 text-green-600 dark:text-green-400">
+                    Gesamtkalorien vom Ernährungsplan:
+                  </td>
+                  <td class="text-left text-green-600 dark:text-green-400">
+                    {{ formatCalories(mealPlanData.totalCalories) }} kcal
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Mittagessen Card -->
-        <div
-          class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-        >
-          <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.lunch?.image_urls?.[0] || '' : ''"
-            :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.lunch?.title || 'Mittagessen'
-                : 'Mittagessen'
-            "
-            class="w-full h-48 object-cover"
-          />
-          <div class="p-6">
-            <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
-              Mittagessen
-            </h2>
-            <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.lunch"
-              class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
-            >
-              {{ mealPlan.meals.lunch.title }}
-            </h3>
-            <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.lunch"
-              class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-            >
-              {{ formatCalories(mealPlan.meals.lunch.nutrition.kcal) }} kcal
-            </p>
-            <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
-              Leckere Mittagsgerichte für Energie und Genuss!
-            </p>
-            <router-link
-              to="./recipe-lunch"
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-            >
-              Mehr erfahren
-            </router-link>
+        <div class="h-5"></div>
+        <div v-if="!error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Recipe cards only shown when data is loaded and no errors -->
+          <!-- Frühstück Card -->
+          <div
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
+          >
+            <img
+              :src="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.breakfast?.image_urls?.[0] || ''
+                  : ''
+              "
+              :alt="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.breakfast?.title || 'Frühstück'
+                  : 'Frühstück'
+              "
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
+                Frühstück
+              </h2>
+              <h3
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
+              >
+                {{ mealPlanData.meals.breakfast.title }}
+              </h3>
+              <p
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
+              >
+                {{ formatCalories(mealPlanData.meals.breakfast.nutrition.kcal) }} kcal
+              </p>
+              <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
+                Starte deinen Tag mit leckeren und gesunden Frühstücksrezepten!
+              </p>
+              <router-link
+                to="./recipe-breakfast"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
+              >
+                Mehr erfahren
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Mittagessen Card -->
+          <div
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
+          >
+            <img
+              :src="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.lunch?.image_urls?.[0] || ''
+                  : ''
+              "
+              :alt="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.lunch?.title || 'Mittagessen'
+                  : 'Mittagessen'
+              "
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
+                Mittagessen
+              </h2>
+              <h3
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
+              >
+                {{ mealPlanData.meals.lunch.title }}
+              </h3>
+              <p
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
+              >
+                {{ formatCalories(mealPlanData.meals.lunch.nutrition.kcal) }} kcal
+              </p>
+              <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
+                Leckere Mittagsgerichte für Energie und Genuss!
+              </p>
+              <router-link
+                to="./recipe-lunch"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
+              >
+                Mehr erfahren
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Abendessen Card -->
+          <div
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
+          >
+            <img
+              :src="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.dinner?.image_urls?.[0] || ''
+                  : ''
+              "
+              :alt="
+                mealPlanData && mealPlanData.meals
+                  ? mealPlanData.meals.dinner?.title || 'Abendessen'
+                  : 'Abendessen'
+              "
+              class="w-full h-48 object-cover"
+            />
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
+                Abendessen
+              </h2>
+              <h3
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
+              >
+                {{ mealPlanData.meals.dinner.title }}
+              </h3>
+              <p
+                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
+              >
+                {{ formatCalories(mealPlanData.meals.dinner.nutrition.kcal) }} kcal
+              </p>
+              <p v-else class="mt-2 text-[#4A5759] dark:text-gray-300">
+                Genieße dein Abendessen mit einer Vielfalt an leckeren Rezepten!
+              </p>
+              <router-link
+                to="./recipe-dinner"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
+              >
+                Mehr erfahren
+              </router-link>
+            </div>
           </div>
         </div>
 
-        <!-- Abendessen Card -->
-        <div
-          class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-        >
-          <img
-            :src="mealPlan && mealPlan.meals ? mealPlan.meals.dinner?.image_urls?.[0] || '' : ''"
-            :alt="
-              mealPlan && mealPlan.meals
-                ? mealPlan.meals.dinner?.title || 'Abendessen'
-                : 'Abendessen'
-            "
-            class="w-full h-48 object-cover"
-          />
-          <div class="p-6">
-            <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
-              Abendessen
-            </h2>
-            <h3
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.dinner"
-              class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
+        <div class="h-5"></div>
+
+        <!-- Regenerate button -->
+        <div v-if="!error" class="flex justify-center mt-12">
+          <button
+            @click="regenerateMealPlan"
+            class="bg-[#E89BA7] hover:bg-[#d88995] text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 flex items-center dark:bg-[#FF6F61] dark:hover:bg-[#e56356]"
+            :disabled="isRegenerating"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {{ mealPlan.meals.dinner.title }}
-            </h3>
-            <p
-              v-if="mealPlan && mealPlan.meals && mealPlan.meals.dinner"
-              class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-            >
-              {{ formatCalories(mealPlan.meals.dinner.nutrition.kcal) }} kcal
-            </p>
-            <p v-else class="mt-2 text-[#4A5759] dark:text-gray-300">
-              Genieße dein Abendessen mit einer Vielfalt an leckeren Rezepten!
-            </p>
-            <router-link
-              to="./recipe-dinner"
-              class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-            >
-              Mehr erfahren
-            </router-link>
-          </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            <div class="w-1"></div>
+            <span>
+              {{
+                isRegenerating ? 'Neue Rezepte werden erstellt...' : 'Andere Rezepte vorschlagen'
+              }}
+            </span>
+          </button>
         </div>
       </div>
     </div>

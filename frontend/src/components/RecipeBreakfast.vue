@@ -1,6 +1,7 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-b from-white to-gray-100 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 text-gray-900 font-sans dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 dark:text-white">
+    class="min-h-screen bg-gradient-to-b from-white to-gray-100 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 text-gray-900 font-sans dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 dark:text-white"
+  >
     <div class="h-5"></div>
     <div class="bg-[#4A5759] py-6 shadow-md mb-16 w-full dark:bg-[#2C3E50]">
       <h1 class="text-4xl font-bold text-center text-white">
@@ -11,8 +12,10 @@
 
     <!-- Zurück zur Übersicht Button -->
     <div class="flex justify mt-4">
-      <router-link to="/recipes"
-        class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 bg-[#86AC86] hover:bg-[#6D9C6D] dark:bg-[#86AC86] dark:hover:bg-[#6D9C6D]">
+      <router-link
+        to="/recipes"
+        class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 bg-[#86AC86] hover:bg-[#6D9C6D] dark:bg-[#86AC86] dark:hover:bg-[#6D9C6D]"
+      >
         ← Zurück zur Übersicht
       </router-link>
     </div>
@@ -30,8 +33,10 @@
     >
       <strong class="font-bold">Fehler!</strong>
       <span class="block sm:inline"> {{ storeError }}</span>
-      <router-link to="/recipes"
-        class="mt-4 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+      <router-link
+        to="/recipes"
+        class="mt-4 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
         Zurück zur Rezeptübersicht
       </router-link>
     </div>
@@ -43,14 +48,15 @@
         :src="breakfast?.image_urls?.[0] || ''"
         :alt="breakfast?.title"
         class="rounded-lg shadow-md w-full h-auto object-cover max-h-[50vh]"
-        class="rounded-lg shadow-md w-full h-auto object-cover max-h-[50vh]" />
+      />
     </div>
 
     <div class="h-5"></div>
     <!-- Info-Sektion (volle Breite) -->
     <div
       v-if="!isLoading && !storeError"
-      class="bg-white p-8 rounded-xl shadow-md md:p-12 w-full mx-auto mt-8 dark:bg-[#2C3E50] dark:text-white">
+      class="bg-white p-8 rounded-xl shadow-md md:p-12 w-full mx-auto mt-8 dark:bg-[#2C3E50] dark:text-white"
+    >
       <div class="flex flex-col md:flex-row items-center justify-between gap-8 w-full">
         <div class="flex flex-col md:flex-row items-center justify-center gap-8 w-full">
           <!-- Rechte Sektion (Datenpunkte) -->
@@ -88,7 +94,9 @@
     <div v-if="!isLoading && !storeError" class="h-5"></div>
     <div v-if="!isLoading && !storeError" class="mt-16 flex flex-col md:flex-row gap-16">
       <!-- Zutaten Block -->
-      <div class="bg-white p-8 rounded-xl shadow-md w-full md:w-1/2 dark:bg-[#2C3E50] dark:text-white">
+      <div
+        class="bg-white p-8 rounded-xl shadow-md w-full md:w-1/2 dark:bg-[#2C3E50] dark:text-white"
+      >
         <h2 class="text-2xl font-bold text-[#E89BA7] mb-6 dark:text-[#FF9F7F]">Zutaten</h2>
         <ul class="list-disc pl-6 text-[#4A5759] space-y-2 dark:text-gray-300">
           <li v-for="(ingredient, index) in breakfast?.ingredients" :key="index">
