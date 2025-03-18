@@ -52,7 +52,7 @@ export function useMealPlanStore() {
       }
 
       // If not in localStorage or we're forcing a refresh, fetch from API
-      const response = await fetch('http://localhost:8000/get_meal_plan')
+      const response = await fetch('/get_meal_plan')
 
       if (response.status === 400) {
         // This is expected if user data hasn't been entered yet

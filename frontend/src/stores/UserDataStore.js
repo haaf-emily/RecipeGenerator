@@ -18,7 +18,7 @@ const isLoading = ref(false)
 const clearCacheOnStartup = async () => {
   try {
     // console.log('Clearing cache on startup')
-    await fetch('http://localhost:8000/api/clear-cache', {
+    await fetch('/api/clear-cache', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export function useUserDataStore() {
 
       try {
         // Then clear backend cache
-        const response = await fetch('http://localhost:8000/api/clear-cache', {
+        const response = await fetch('/api/clear-cache', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export function useUserDataStore() {
       // console.log('Sending user data:', JSON.stringify(userData))
 
       isLoading.value = true
-      const response = await fetch('http://localhost:8000/api/user-data', {
+      const response = await fetch('/api/user-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export function useUserDataStore() {
       isLoading.value = true
       const timestamp = new Date().getTime()
 
-      const response = await fetch(`http://localhost:8000/api/user-data?t=${timestamp}`, {
+      const response = await fetch(`/api/user-data?t=${timestamp}`, {
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
           Pragma: 'no-cache',
@@ -150,7 +150,7 @@ export function useUserDataStore() {
   // const loadFromBackend = async () => {
   //   try {
   //     isLoading.value = true
-  //     const response = await fetch('http://localhost:8000/api/user-data')
+  //     const response = await fetch('/api/user-data')
 
   //     if (!response.ok) {
   //       throw new Error('Failed to fetch user data')

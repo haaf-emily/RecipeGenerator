@@ -410,17 +410,17 @@ app.post("/api/user-data", async (req, res) => {
 
     // Clear relevant caches based on what changed
     if (calorieDataChanged) {
-      console.log("Calorie-relevant data changed, clearing calories cache");
+      // console.log("Calorie-relevant data changed, clearing calories cache");
       caloriesCache.flushAll();
 
       // Also clear recipe cache since meal selection depends on calories
-      console.log("Clearing recipe cache due to calorie changes");
+      // console.log("Clearing recipe cache due to calorie changes");
       recipesCache.flushAll();
     }
 
     // Check if location changed
     if (oldData.location !== userData.location) {
-      console.log("Location changed, clearing location-related caches");
+      // console.log("Location changed, clearing location-related caches");
 
       // If old location exists, clear its specific cache entries
       if (oldData.location) {
