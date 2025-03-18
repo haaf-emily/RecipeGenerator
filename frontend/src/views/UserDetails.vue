@@ -12,7 +12,7 @@
           v-model="age"
           min="10"
           max="100"
-          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+          class="w-full accent-[#6D9C6D] slider"
           @change="updateAge"
         />
       </div>
@@ -24,7 +24,7 @@
           v-model="height"
           min="100"
           max="250"
-          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+          class="w-full accent-[#6D9C6D] slider"
           @change="updateHeight"
         />
       </div>
@@ -36,7 +36,7 @@
           v-model="weight"
           min="30"
           max="200"
-          class="w-full accent-blue-500 dark:accent-gray-400 slider"
+          class="w-full accent-[#6D9C6D] slider"
           @change="updateWeight"
         />
       </div>
@@ -64,7 +64,7 @@
       </button>
       <button
         @click="submitUserData"
-        class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+        class="px-6 py-2 bg-[#E89BA7] text-white text-lg rounded-lg hover:bg-[#E17A89]"
         :disabled="isLoading"
       >
         <span v-if="isLoading">Lädt...</span>

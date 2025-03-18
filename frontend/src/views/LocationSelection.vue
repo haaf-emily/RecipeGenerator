@@ -11,7 +11,7 @@
     <div class="w-full max-w-lg flex flex-col gap-y-6">
       <button
         @click="getLocation"
-        class="px-6 py-2 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-700"
+        class="text-lg text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 bg-[#86AC86] hover:bg-[#6D9C6D] dark:bg-[#86AC86] dark:hover:bg-[#6D9C6D]"
         :disabled="isLoading || locationLoading"
       >
         <span v-if="locationLoading">Standort wird abgefragt...</span>
@@ -54,7 +54,7 @@
       </button>
       <button
         @click="nextStep"
-        class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+        class="px-6 py-2 bg-[#E89BA7] text-white text-lg rounded-lg hover:bg-[#E17A89]"
         :disabled="isLoading || locationLoading"
       >
         <span v-if="isLoading">Lädt...</span>
