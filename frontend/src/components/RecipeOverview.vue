@@ -200,12 +200,42 @@
           </div>
         </div>
       </div>
+
+      <div class="h-5"></div>
+
+      <!-- Regenerate button -->
+      <div class="flex justify-center mt-12" v-if="mealPlanData && !isLoading">
+        <button
+          @click="regenerateMealPlan"
+          class="bg-[#E89BA7] hover:bg-[#d88995] text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 flex items-center dark:bg-[#FF6F61] dark:hover:bg-[#e56356]"
+          :disabled="isRegenerating"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            ></path>
+          </svg>
+          <div class="w-1"></div>
+          <span>
+            {{ isRegenerating ? 'Neue Rezepte werden erstellt...' : 'Andere Rezepte vorschlagen' }}
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserDataStore } from '../stores/UserDataStore'
 import { useMealPlanStore } from '../stores/MealPlanStore'
@@ -213,6 +243,8 @@ import { useMealPlanStore } from '../stores/MealPlanStore'
 const router = useRouter()
 const { userData, loadFromBackend } = useUserDataStore()
 const { mealPlanData, isLoading, error, fetchMealPlan } = useMealPlanStore()
+const isRegenerating = ref(false)
+const regenerateSuccess = ref(false)
 
 // Format calories to be a whole number
 const formatCalories = (calories) => {
@@ -242,6 +274,24 @@ const loadMealPlan = async (forceRefresh = false) => {
     setTimeout(() => {
       router.push('/')
     }, 3000)
+  }
+}
+
+// Regenerate meal plan
+const regenerateMealPlan = async () => {
+  isRegenerating.value = true
+  regenerateSuccess.value = false
+  try {
+    const result = await fetchMealPlan(true) // Force refresh
+    if (result.success) {
+      regenerateSuccess.value = true
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        regenerateSuccess.value = false
+      }, 3000)
+    }
+  } finally {
+    isRegenerating.value = false
   }
 }
 
