@@ -4,25 +4,24 @@
 
     <div class="h-5"></div>
     <div class="bg-[#4A5759] py-6 shadow-md mb-16 w-full dark:bg-[#2C3E50]">
-      <h1 class="text-4xl font-bold text-center text-white">Rezept Titel</h1>
+      <h1 class="text-4xl font-bold text-center text-white">{{ breakfast.title }}</h1>
     </div>
     <div class="h-5"></div>
 
     <!-- Zurück zur Übersicht Button -->
     <div class="flex justify mt-4">
-      <router-link to="/recipes" class="bg-[#D4D0C4] text-[#4A5759] font-semibold py-2 px-6 rounded-full shadow-sm 
-           transition duration-300 transform hover:scale-105 
-           hover:bg-[#4A5759] hover:text-[#D4D0C4] 
+      <router-link to="/recipes" class="bg-[#D4D0C4] text-[#4A5759] font-semibold py-2 px-6 rounded-full shadow-sm
+           transition duration-300 transform hover:scale-105
+           hover:bg-[#4A5759] hover:text-[#D4D0C4]
            dark:bg-[#3E4B4D] dark:text-white dark:hover:bg-[#E89BA7] dark:hover:text-white">
         ← Zurück zur Übersicht
       </router-link>
     </div>
 
-
     <div class="h-5"></div>
 
     <div class="flex justify-center items-center mt-12">
-      <img src="./path-to-your-image.jpg" alt="Rezept Bild" class="rounded-lg shadow-md w-full h-auto object-cover" />
+      <img :src="breakfast.image_urls[0]" alt="Rezept Bild" class="rounded-lg shadow-md w-full h-auto object-cover" />
     </div>
 
     <div class="h-5"></div>
@@ -34,10 +33,10 @@
 
           <!-- Linke Sektion (Rating) -->
           <div class="flex flex-col items-center md:items-start w-[20%]">
-            <p class="text-[#E89BA7] font-bold mb-2 text-lg dark:text-[#FF9F7F]">{{ rating }}</p>
+            <p class="text-[#E89BA7] font-bold mb-2 text-lg dark:text-[#FF9F7F]">{{ breakfast.rating.ratingValue }}</p>
             <div class="w-36 h-4 bg-gray-200 rounded-full relative overflow-hidden dark:bg-gray-600">
               <div class="h-4 bg-gradient-to-r from-[#D4D0C4] to-[#AEC2AF] rounded-full transition-all duration-500"
-                :style="{ width: (rating / 5) * 100 + '%' }"></div>
+                :style="{ width: (breakfast.rating.ratingValue / 5) * 100 + '%' }"></div>
             </div>
           </div>
 
@@ -47,27 +46,25 @@
           <!-- Rechte Sektion (Datenpunkte) -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-center w-[75%]">
             <div class="flex flex-col items-center p-4">
-              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">470</p>
+              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">{{ breakfast.nutrition.kcal }}</p>
               <p class="text-[#4A5759] text-sm dark:text-gray-300">kcal</p>
             </div>
             <div class="flex flex-col items-center p-4">
-              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">8</p>
+              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">{{ breakfast.portions }}</p>
               <p class="text-[#4A5759] text-sm dark:text-gray-300">Portionen</p>
             </div>
             <div class="flex flex-col items-center p-4">
-              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">256</p>
-              <p class="text-[#4A5759] text-sm dark:text-gray-300">kcal</p>
+              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">{{ breakfast.nutrition.kcal / breakfast.portions }}</p>
+              <p class="text-[#4A5759] text-sm dark:text-gray-300">kcal pro Portion</p>
             </div>
             <div class="flex flex-col items-center p-4">
-              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">524</p>
+              <p class="text-[#E89BA7] font-bold text-xl mb-1 dark:text-[#FF9F7F]">{{ breakfast.rating.ratingCount }}</p>
               <p class="text-[#4A5759] text-sm dark:text-gray-300">Bewertungen</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-
 
     <!-- Tags -->
     <div class="h-10"></div>
@@ -87,11 +84,7 @@
       <div class="bg-white p-8 rounded-xl shadow-md w-full md:w-1/2 dark:bg-[#2C3E50] dark:text-white">
         <h2 class="text-2xl font-bold  text-[#E89BA7] mb-6 dark:text-[#FF9F7F]">Zutaten</h2>
         <ul class="list-disc pl-6 text-[#4A5759] space-y-2 dark:text-gray-300">
-          <li>200g Nudeln</li>
-          <li>1 Dose Tomaten</li>
-          <li>1 Zwiebel</li>
-          <li>2 Knoblauchzehen</li>
-          <li>Salz und Pfeffer</li>
+          <li v-for="ingredient in breakfast.ingredients" :key="ingredient.name">{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
         </ul>
       </div>
       <!-- Zubereitung Block -->
@@ -106,14 +99,13 @@
         <div class="h-3"></div>
         <!-- Angepasster Button für das Rezept-Design -->
         <div class="flex justify-center mt-8">
-          <a href="#" class="bg-[#D4D0C4] text-[#4A5759] font-semibold text-lg py-3 px-8 rounded-full shadow-sm 
-           transition duration-300 transform hover:scale-105 
-           hover:bg-[#4A5759] hover:text-[#D4D0C4] 
+          <a :href="breakfast.source" class="bg-[#D4D0C4] text-[#4A5759] font-semibold text-lg py-3 px-8 rounded-full shadow-sm
+           transition duration-300 transform hover:scale-105
+           hover:bg-[#4A5759] hover:text-[#D4D0C4]
            dark:bg-[#3E4B4D] dark:text-white dark:hover:bg-[#E89BA7] dark:hover:text-white">
             Weg zur Zubereitung
           </a>
         </div>
-
       </div>
     </div>
     <div class="h-6"></div>
@@ -123,5 +115,34 @@
 <script>
 export default {
   name: 'RecipeBreakfast',
+  data() {
+    return {
+      breakfast: {
+        title: '',
+        image_urls: [''],
+        ingredients: [],
+        nutrition: {
+          kcal: 0
+        },
+        portions: 0,
+        rating: {
+          ratingValue: 0,
+          ratingCount: 0
+        },
+        source: ''
+      }
+    };
+  },
+  created() {
+    // Fetch breakfast data from the API
+    fetch('/get_meal_plan')
+      .then(response => response.json())
+      .then(data => {
+        this.breakfast = data.meals.breakfast;
+      })
+      .catch(error => {
+        console.error('Error fetching breakfast data:', error);
+      });
+  }
 }
 </script>
