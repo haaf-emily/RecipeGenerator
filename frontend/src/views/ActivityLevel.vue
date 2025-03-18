@@ -25,7 +25,7 @@
       </button>
       <button
         @click="nextStep"
-        class="px-6 py-2 bg-green-500 text-white text-lg rounded-lg hover:bg-green-600"
+        class="px-6 py-2 bg-[#E89BA7] text-white text-lg rounded-lg hover:bg-[#E17A89]"
         :disabled="isLoading"
       >
         <span v-if="isLoading">Lädt...</span>
