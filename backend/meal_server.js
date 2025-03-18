@@ -373,7 +373,8 @@ async function selectThreeMeals(calories, temperature) {
  */
 app.post("/api/user-data", async (req, res) => {
   try {
-    // console.log("Received user data:", req.body);
+    // Store the old values for comparison
+    const oldData = { ...userData };
 
     // Use the more lenient validation
     const { validated, errors, isValid } = validateUserData(req.body);
@@ -388,11 +389,62 @@ app.post("/api/user-data", async (req, res) => {
 
     // Update user data with validated values, keeping existing data
     userData = { ...userData, ...validated };
-    // console.log("Updated user data:", userData);
+
+    // Check if fields that affect calorie calculation have changed
+    const calorieRelevantFields = [
+      "age",
+      "weight",
+      "height",
+      "gender",
+      "activity_level",
+      "goal",
+    ];
+    let calorieDataChanged = false;
+
+    for (const field of calorieRelevantFields) {
+      if (oldData[field] !== userData[field]) {
+        calorieDataChanged = true;
+        break;
+      }
+    }
+
+    // Clear relevant caches based on what changed
+    if (calorieDataChanged) {
+      console.log("Calorie-relevant data changed, clearing calories cache");
+      caloriesCache.flushAll();
+
+      // Also clear recipe cache since meal selection depends on calories
+      console.log("Clearing recipe cache due to calorie changes");
+      recipesCache.flushAll();
+    }
+
+    // Check if location changed
+    if (oldData.location !== userData.location) {
+      console.log("Location changed, clearing location-related caches");
+
+      // If old location exists, clear its specific cache entries
+      if (oldData.location) {
+        const oldLocationKey = `coords-${oldData.location
+          .toLowerCase()
+          .replace(/\s+/g, "")}`;
+        coordinatesCache.del(oldLocationKey);
+      }
+
+      // If new location exists, prepare for new temperature data
+      if (userData.location) {
+        // We don't know the exact temperature cache key since it's based on coordinates
+        // So clear all temperature cache to be safe
+        temperatureCache.flushAll();
+      }
+    }
 
     res.json({
       message: "Data received and validated successfully",
       receivedData: validated,
+      cacheStatus: {
+        calorieDataChanged,
+        locationChanged: oldData.location !== userData.location,
+      },
     });
   } catch (error) {
     console.error("Error processing request:", error);
@@ -497,9 +549,27 @@ app.get("/get_meal_plan", async (req, res) => {
     });
 
     if (missingFields.length > 0) {
+      // Create a map of field names to their German translations
+      const fieldTranslations = {
+        age: "Alter",
+        weight: "Gewicht",
+        height: "Größe",
+        gender: "Geschlecht",
+        activity_level: "Aktivitätslevel",
+      };
+
+      // Map the missing fields to their translations
+      const translatedFields = missingFields.map(
+        (field) => fieldTranslations[field] || field
+      );
+
       return res.status(400).json({
-        error: "Missing required parameters",
-        required: missingFields,
+        error:
+          "Bitte füllen Sie die folgenden Felder aus: " +
+          translatedFields.join(", "),
+        missingFields: missingFields,
+        translatedFields: translatedFields,
+        status: "incomplete_profile",
         currentData: userData,
       });
     }
@@ -517,41 +587,49 @@ app.get("/get_meal_plan", async (req, res) => {
       calculationGoal
     );
 
-    // Log after calorie calculation
-    // console.log("Calorie calculation result:", calories);
-
     if (!calories) {
-      return res.status(500).json({ error: "Error calculating calories" });
+      return res.status(500).json({
+        error: "Error calculating calories",
+        status: "calorie_calculation_failed",
+        message:
+          "Es gab ein Problem bei der Berechnung Ihres Kalorienbedarfs. Bitte versuchen Sie es später erneut.",
+      });
     }
 
     // Use default temperature if location is missing
     let feelsLikeTemp = 15; // Default to moderate temperature
+    let locationStatus = "default_used";
 
     // Only get real temperature if location is provided
     if (location && location.trim()) {
       const coordinates = await getCoordinates(location);
       if (coordinates) {
+        locationStatus = "coordinates_found";
         const tempResult = await getFeelsLikeTemperature(
           coordinates.latitude,
           coordinates.longitude
         );
-        // console.log("Temperature result:", tempResult);
 
         if (tempResult !== null) {
           feelsLikeTemp = tempResult;
-          // console.log("Using actual temperature:", feelsLikeTemp);
+          locationStatus = "temperature_found";
+        } else {
+          locationStatus = "temperature_failed";
         }
+      } else {
+        locationStatus = "coordinates_failed";
       }
     }
 
     const mealPlan = await selectThreeMeals(calories, feelsLikeTemp);
-    // console.log(
-    //   "Meal plan selection result:",
-    //   JSON.stringify(mealPlan, null, 2)
-    // );
 
     if (mealPlan.error) {
-      return res.status(500).json({ error: mealPlan.error });
+      return res.status(500).json({
+        error: mealPlan.error,
+        status: "meal_selection_failed",
+        message:
+          "Es konnten keine passenden Rezepte gefunden werden. Bitte versuchen Sie es später erneut.",
+      });
     }
 
     // Create the response object
@@ -562,7 +640,8 @@ app.get("/get_meal_plan", async (req, res) => {
       locationUsed:
         location && location.trim()
           ? location
-          : "Not provided (using default temperature)",
+          : "Nicht angegeben (Standard-Temperatur wird verwendet)",
+      locationStatus: locationStatus,
       meals: {
         breakfast: mealPlan.breakfast,
         lunch: mealPlan.lunch,
@@ -575,7 +654,12 @@ app.get("/get_meal_plan", async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error("Error fetching meal plan:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({
+      error: "Internal server error",
+      status: "server_error",
+      message:
+        "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+    });
   }
 });
 

@@ -9,6 +9,22 @@ import RecipeLunch from '../components/RecipeLunch.vue'
 import RecipeDinner from '../components/RecipeDinner.vue'
 import { useMealPlanStore } from '../stores/MealPlanStore'
 
+// Reusable navigation guard factory
+function createMealGuard(mealType) {
+  return async (to, from, next) => {
+    const { mealPlanData, hasLoaded, fetchMealPlan } = useMealPlanStore()
+
+    // If we already have data for this meal type, proceed
+    if (hasLoaded.value && mealPlanData.meals?.[mealType]) {
+      next()
+    } else {
+      // Try to fetch data, but don't force a refresh
+      const result = await fetchMealPlan(false)
+      next()
+    }
+  }
+}
+
 const routes = [
   { path: '/', component: GenderSelection },
   { path: '/details', component: UserDetails },
@@ -22,49 +38,17 @@ const routes = [
   {
     path: '/recipe-breakfast',
     component: RecipeBreakfast,
-    // beforeEnter navigation guard ensures meal plan data is loaded
-    beforeEnter: async (to, from, next) => {
-      const { mealPlanData, hasLoaded, fetchMealPlan } = useMealPlanStore()
-
-      // If we already have data for breakfast, proceed
-      if (hasLoaded.value && mealPlanData.meals?.breakfast) {
-        next()
-      } else {
-        // Try to fetch data
-        const result = await fetchMealPlan()
-
-        // Continue even if fetch fails - component will handle error display
-        next()
-      }
-    },
+    beforeEnter: createMealGuard('breakfast'),
   },
   {
     path: '/recipe-lunch',
     component: RecipeLunch,
-    beforeEnter: async (to, from, next) => {
-      const { mealPlanData, hasLoaded, fetchMealPlan } = useMealPlanStore()
-
-      if (hasLoaded.value && mealPlanData.meals?.lunch) {
-        next()
-      } else {
-        const result = await fetchMealPlan()
-        next()
-      }
-    },
+    beforeEnter: createMealGuard('lunch'),
   },
   {
     path: '/recipe-dinner',
     component: RecipeDinner,
-    beforeEnter: async (to, from, next) => {
-      const { mealPlanData, hasLoaded, fetchMealPlan } = useMealPlanStore()
-
-      if (hasLoaded.value && mealPlanData.meals?.dinner) {
-        next()
-      } else {
-        const result = await fetchMealPlan()
-        next()
-      }
-    },
+    beforeEnter: createMealGuard('dinner'),
   },
 ]
 

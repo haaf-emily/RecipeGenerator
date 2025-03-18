@@ -68,9 +68,11 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserDataStore } from '../stores/UserDataStore.js'
+import { useMealPlanStore } from '../stores/MealPlanStore.js'
 
 const router = useRouter()
 const { userData, isLoading, updateUserData, saveToBackend, loadFromBackend } = useUserDataStore()
+const mealPlanStore = useMealPlanStore()
 const cityInput = ref(userData.location || '')
 const suggestedCities = ref([])
 const locationLoading = ref(false)
@@ -222,6 +224,10 @@ const nextStep = async () => {
     // Update location in store (even if empty)
     updateUserData('location', cityInput.value)
     await saveToBackend()
+
+    // Clear any existing meal plan data to ensure a fresh fetch when reaching the recipes page
+    mealPlanStore.resetMealPlan()
+
     router.push('/recipes')
   } catch (error) {
     console.error('Error saving location:', error)

@@ -40,10 +40,10 @@ export function useUserDataStore() {
   // Manual clear function for testing
   const clearUserData = async () => {
     try {
-      console.log('Manually clearing data and cache')
+      console.log('Clearing user data and cache')
       isLoading.value = true
 
-      // Reset local data first
+      // Reset local data to defaults
       Object.assign(userData, {
         gender: null,
         age: 25,
@@ -54,17 +54,29 @@ export function useUserDataStore() {
         location: '',
       })
 
-      // Then clear backend cache
-      const response = await fetch('http://localhost:8000/api/clear-cache', {
-        method: 'POST',
-        cache: 'no-store',
-      })
+      // Clear localStorage if you're using it
+      localStorage.removeItem('userData')
 
-      if (!response.ok) {
-        throw new Error('Failed to clear cache')
+      try {
+        // Then clear backend cache
+        const response = await fetch('http://localhost:8000/api/clear-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+          cache: 'no-store',
+        })
+
+        if (!response.ok) {
+          console.error('Failed to clear backend cache')
+        }
+      } catch (cacheError) {
+        console.error('Error clearing backend cache:', cacheError)
+        // Continue execution even if clearing cache fails
       }
 
-      console.log('Cache cleared successfully')
+      console.log('User data cleared successfully')
       return true
     } catch (error) {
       console.error('Error clearing data:', error)
@@ -183,5 +195,6 @@ export function useUserDataStore() {
     loadFromBackend,
     updateUserData,
     hasRequiredData,
+    clearUserData,
   }
 }

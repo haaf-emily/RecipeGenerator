@@ -21,18 +21,18 @@
     </div>
 
     <!-- Loading indicator -->
-    <div v-if="loading" class="flex justify-center items-center py-16">
+    <div v-if="isLoading" class="flex justify-center items-center py-16">
       <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E89BA7]"></div>
       <span class="ml-4 text-lg">Rezept wird geladen...</span>
     </div>
 
     <!-- Error message -->
     <div
-      v-else-if="error"
+      v-else-if="storeError"
       class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-8"
     >
       <strong class="font-bold">Fehler!</strong>
-      <span class="block sm:inline"> {{ error }}</span>
+      <span class="block sm:inline"> {{ storeError }}</span>
       <router-link
         to="/recipes"
         class="mt-4 inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
@@ -41,9 +41,9 @@
       </router-link>
     </div>
 
-    <div v-if="!loading && !error" class="h-5"></div>
+    <div v-if="!isLoading && !storeError" class="h-5"></div>
 
-    <div v-if="!loading && !error" class="flex justify-center items-center mt-12">
+    <div v-if="!isLoading && !storeError" class="flex justify-center items-center mt-12">
       <img
         :src="lunch.image_urls?.[0] || ''"
         :alt="lunch.title"
@@ -54,7 +54,7 @@
     <div class="h-5"></div>
     <!-- Info-Sektion (volle Breite) -->
     <div
-      v-if="!loading && !error"
+      v-if="!isLoading && !storeError"
       class="bg-white p-8 rounded-xl shadow-md md:p-12 w-full mx-auto mt-8 dark:bg-[#2C3E50] dark:text-white"
     >
       <div class="flex flex-col md:flex-row items-center justify-between gap-8 w-full">
@@ -91,8 +91,8 @@
     </div>
 
     <!-- Zutaten -->
-    <div v-if="!loading && !error" class="h-5"></div>
-    <div v-if="!loading && !error" class="mt-16 flex flex-col md:flex-row gap-16">
+    <div v-if="!isLoading && !storeError" class="h-5"></div>
+    <div v-if="!isLoading && !storeError" class="mt-16 flex flex-col md:flex-row gap-16">
       <!-- Zutaten Block -->
       <div
         class="bg-white p-8 rounded-xl shadow-md w-full md:w-1/2 dark:bg-[#2C3E50] dark:text-white"

@@ -1,7 +1,7 @@
 import { ref, reactive } from 'vue'
 
-// Create a reactive store for meal plan data
-const mealPlanData = reactive({
+// Create a default state object for initialization and reset
+const defaultState = {
   meals: {
     breakfast: null,
     lunch: null,
@@ -12,7 +12,10 @@ const mealPlanData = reactive({
   feelsLikeTemperature: 0,
   locationUsed: '',
   totalCalories: 0,
-})
+}
+
+// Create a reactive store with the default state
+const mealPlanData = reactive({ ...defaultState })
 
 // Flag to track if data is being loaded
 const isLoading = ref(false)
@@ -21,6 +24,8 @@ const error = ref('')
 
 export function useMealPlanStore() {
   // Fetch meal plan data from API
+  // In MealPlanStore.js
+
   const fetchMealPlan = async (forceRefresh = false) => {
     // If we already have data and we're not forcing a refresh, just return
     if (hasLoaded.value && !forceRefresh) {
@@ -49,7 +54,16 @@ export function useMealPlanStore() {
       // If not in localStorage or we're forcing a refresh, fetch from API
       const response = await fetch('http://localhost:8000/get_meal_plan')
 
-      if (!response.ok) {
+      if (response.status === 400) {
+        // This is expected if user data hasn't been entered yet
+        console.log('User data required for meal plan - redirecting to questionnaire')
+        error.value = 'Bitte füllen Sie zuerst Ihre persönlichen Daten aus'
+        return {
+          success: false,
+          error: error.value,
+          status: 'incomplete_profile',
+        }
+      } else if (!response.ok) {
         throw new Error(`Server antwortet mit Status: ${response.status}`)
       }
 
@@ -78,20 +92,13 @@ export function useMealPlanStore() {
 
   // Reset the store (useful when user data changes)
   const resetMealPlan = () => {
-    Object.assign(mealPlanData, {
-      meals: {
-        breakfast: null,
-        lunch: null,
-        dinner: null,
-      },
-      calorieRequirement: 0,
-      goal: 'maintenance',
-      feelsLikeTemperature: 0,
-      locationUsed: '',
-      totalCalories: 0,
-    })
+    // Use the default state object to reset
+    Object.assign(mealPlanData, { ...defaultState })
     hasLoaded.value = false
     error.value = ''
+
+    // Also clear localStorage
+    localStorage.removeItem('mealPlan')
   }
 
   return {
