@@ -4,9 +4,7 @@
     <div class="container mx-auto px-6">
       <!-- Loading state - takes full screen with centered spinner -->
       <div v-if="isLoading" class="flex flex-col justify-center items-center h-screen">
-        <div
-          class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E89BA7]"
-        ></div>
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#E89BA7]"></div>
         <span class="mt-6 text-xl dark:text-white">Rezepte werden geladen...</span>
       </div>
 
@@ -18,25 +16,17 @@
         </div>
 
         <!-- Error message -->
-        <div
-          v-if="error"
-          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-8"
-        >
+        <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-8">
           <strong class="font-bold">Fehler!</strong>
           <span class="block sm:inline"> {{ error }}</span>
-          <button
-            @click="loadMealPlan(true)"
-            class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
+          <button @click="loadMealPlan(true)"
+            class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
             Erneut versuchen
           </button>
         </div>
 
         <!-- Meal plan info -->
-        <div
-          v-else-if="mealPlanData"
-          class="mb-8 p-4 bg-white dark:bg-[#2C3E50] rounded-lg shadow flex justify-center"
-        >
+        <div v-else-if="mealPlanData" class="mb-8 p-4 bg-white dark:bg-[#2C3E50] rounded-lg shadow flex justify-center">
           <div class="mb-6 max-w-2xl">
             <table class="w-auto text-lg dark:text-white">
               <tbody>
@@ -74,44 +64,31 @@
           <!-- Recipe cards only shown when data is loaded and no errors -->
           <!-- Frühstück Card -->
           <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-          >
-            <img
-              :src="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.breakfast?.image_urls?.[0] || ''
-                  : ''
-              "
-              :alt="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.breakfast?.title || 'Frühstück'
-                  : 'Frühstück'
-              "
-              class="w-full h-48 object-cover"
-            />
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white">
+            <img :src="mealPlanData && mealPlanData.meals
+              ? mealPlanData.meals.breakfast?.image_urls?.[0] || ''
+              : ''
+              " :alt="mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.breakfast?.title || 'Frühstück'
+                : 'Frühstück'
+                " class="w-full h-48 object-cover" />
             <div class="p-6">
               <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
                 Frühstück
               </h2>
-              <h3
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
-                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
-              >
+              <h3 v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200">
                 {{ mealPlanData.meals.breakfast.title }}
               </h3>
-              <p
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
-                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-              >
+              <p v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.breakfast"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300">
                 {{ formatCalories(mealPlanData.meals.breakfast.nutrition.kcal) }} kcal
               </p>
               <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
                 Starte deinen Tag mit leckeren und gesunden Frühstücksrezepten!
               </p>
-              <router-link
-                to="./recipe-breakfast"
-                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >
+              <router-link to="./recipe-breakfast"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">
                 Mehr erfahren
               </router-link>
             </div>
@@ -119,44 +96,31 @@
 
           <!-- Mittagessen Card -->
           <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-          >
-            <img
-              :src="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.lunch?.image_urls?.[0] || ''
-                  : ''
-              "
-              :alt="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.lunch?.title || 'Mittagessen'
-                  : 'Mittagessen'
-              "
-              class="w-full h-48 object-cover"
-            />
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white">
+            <img :src="mealPlanData && mealPlanData.meals
+              ? mealPlanData.meals.lunch?.image_urls?.[0] || ''
+              : ''
+              " :alt="mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.lunch?.title || 'Mittagessen'
+                : 'Mittagessen'
+                " class="w-full h-48 object-cover" />
             <div class="p-6">
               <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
                 Mittagessen
               </h2>
-              <h3
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
-                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
-              >
+              <h3 v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200">
                 {{ mealPlanData.meals.lunch.title }}
               </h3>
-              <p
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
-                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-              >
+              <p v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.lunch"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300">
                 {{ formatCalories(mealPlanData.meals.lunch.nutrition.kcal) }} kcal
               </p>
               <p v-else class="text-[#4A5759] mt-2 dark:text-gray-300">
                 Leckere Mittagsgerichte für Energie und Genuss!
               </p>
-              <router-link
-                to="./recipe-lunch"
-                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >
+              <router-link to="./recipe-lunch"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">
                 Mehr erfahren
               </router-link>
             </div>
@@ -164,44 +128,31 @@
 
           <!-- Abendessen Card -->
           <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white"
-          >
-            <img
-              :src="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.dinner?.image_urls?.[0] || ''
-                  : ''
-              "
-              :alt="
-                mealPlanData && mealPlanData.meals
-                  ? mealPlanData.meals.dinner?.title || 'Abendessen'
-                  : 'Abendessen'
-              "
-              class="w-full h-48 object-cover"
-            />
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 dark:bg-[#2C3E50] dark:text-white">
+            <img :src="mealPlanData && mealPlanData.meals
+              ? mealPlanData.meals.dinner?.image_urls?.[0] || ''
+              : ''
+              " :alt="mealPlanData && mealPlanData.meals
+                ? mealPlanData.meals.dinner?.title || 'Abendessen'
+                : 'Abendessen'
+                " class="w-full h-48 object-cover" />
             <div class="p-6">
               <h2 class="text-xl font-semibold text-primary text-[#E89BA7] dark:text-[#FF9F7F]">
                 Abendessen
               </h2>
-              <h3
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
-                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200"
-              >
+              <h3 v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
+                class="font-bold mt-2 text-[#4A5759] dark:text-gray-200">
                 {{ mealPlanData.meals.dinner.title }}
               </h3>
-              <p
-                v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
-                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300"
-              >
+              <p v-if="mealPlanData && mealPlanData.meals && mealPlanData.meals.dinner"
+                class="text-sm text-[#4A5759] mt-1 dark:text-gray-300">
                 {{ formatCalories(mealPlanData.meals.dinner.nutrition.kcal) }} kcal
               </p>
               <p v-else class="mt-2 text-[#4A5759] dark:text-gray-300">
                 Genieße dein Abendessen mit einer Vielfalt an leckeren Rezepten!
               </p>
-              <router-link
-                to="./recipe-dinner"
-                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90"
-              >
+              <router-link to="./recipe-dinner"
+                class="mt-4 inline-block text-white bg-primary px-4 py-2 rounded hover:bg-opacity-80 dark:bg-[#FF6F61] dark:hover:bg-opacity-90">
                 Mehr erfahren
               </router-link>
             </div>
@@ -212,24 +163,14 @@
 
         <!-- Regenerate button -->
         <div v-if="!error" class="flex justify-center mt-12">
-          <button
-            @click="regenerateMealPlan"
+          <button @click="regenerateMealPlan"
             class="bg-[#E89BA7] hover:bg-[#d88995] text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 flex items-center dark:bg-[#FF6F61] dark:hover:bg-[#e56356]"
-            :disabled="isRegenerating"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              ></path>
+            :disabled="isRegenerating">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+              </path>
             </svg>
             <div class="w-1"></div>
             <span>
