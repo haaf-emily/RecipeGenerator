@@ -20,7 +20,7 @@ services:
       context: ./backend # Path to your backend code
       dockerfile: Dockerfile.backend
     ports:
-      - "8000:8000" # Map host port 8000 to container port 8000
+      - "8081:8000" # Map host port 8000 to container port 8000
     environment:
       - NODE_ENV=production
       - GOOGLE_GEOCODE_API_KEY=${GOOGLE_GEOCODE_API_KEY}
